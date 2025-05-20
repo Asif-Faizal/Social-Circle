@@ -1,9 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
-import { UserController } from './controllers/user.controller';
 import { connectToDatabase, closeDatabase } from './utils/database';
 import config from './config/config';
+import { registerRoutes } from './routes';
 
 // Load proto file
 const PROTO_PATH = path.resolve(__dirname, './proto/user.proto');
@@ -19,9 +19,6 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const userProto = protoDescriptor.user as any;
 
-// Initialize controllers
-const userController = new UserController();
-
 async function startServer() {
   try {
     // Connect to MongoDB
@@ -30,10 +27,8 @@ async function startServer() {
     // Create gRPC server
     const server = new grpc.Server();
 
-    // Add user service
-    server.addService(userProto.UserService.service, {
-      register: userController.register.bind(userController),
-    });
+    // Register all routes
+    registerRoutes(server, userProto);
 
     // Start server
     server.bindAsync(
@@ -66,4 +61,4 @@ async function startServer() {
   }
 }
 
-startServer(); 
+startServer();

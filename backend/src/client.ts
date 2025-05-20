@@ -2,6 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import config from './config/config';
+import readline from 'readline';
 
 // Load proto file
 const PROTO_PATH = path.resolve(__dirname, './proto/user.proto');
@@ -23,27 +24,73 @@ const client = new userProto.UserService(
   grpc.credentials.createInsecure()
 );
 
-// Example user for registration
-const user = {
-  username: 'testuser',
-  email: 'test@example.com',
-  password: 'password123',
-};
+// Create readline interface for user input
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-// Test register user
-client.register(user, (error: any, response: any) => {
-  if (error) {
-    console.error('Error:', error);
-    return;
-  }
-
-  console.log('Response:', response);
+// Function to register a user
+function registerUser(username: string, email: string, password: string) {
+  const userData = { username, email, password };
   
-  if (response.success) {
-    console.log('User registered successfully');
-    console.log('Token:', response.token);
-    console.log('User:', response.user);
-  } else {
-    console.log('Registration failed:', response.message);
-  }
-}); 
+  console.log(`Registering user: ${username}, ${email}`);
+  
+  client.register(userData, (error: any, response: any) => {
+    if (error) {
+      console.error('Error:', error);
+      rl.close();
+      return;
+    }
+
+    console.log('Response:', response);
+    
+    if (response.success) {
+      console.log('User registered successfully');
+      console.log('Token:', response.token);
+      console.log('User:', response.user);
+    } else {
+      console.log('Registration failed:', response.message);
+    }
+    
+    rl.close();
+  });
+}
+
+// Main menu
+function showMenu() {
+  console.log('\n--- gRPC Client Menu ---');
+  console.log('1. Register a new user');
+  console.log('0. Exit');
+  
+  rl.question('Select an option: ', (option) => {
+    switch (option) {
+      case '1':
+        promptRegisterUser();
+        break;
+      case '0':
+        console.log('Exiting...');
+        rl.close();
+        break;
+      default:
+        console.log('Invalid option');
+        showMenu();
+        break;
+    }
+  });
+}
+
+// Prompt for user registration
+function promptRegisterUser() {
+  rl.question('Enter username: ', (username) => {
+    rl.question('Enter email: ', (email) => {
+      rl.question('Enter password: ', (password) => {
+        registerUser(username, email, password);
+      });
+    });
+  });
+}
+
+// Start the client
+console.log('gRPC Client Started');
+showMenu(); 
