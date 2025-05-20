@@ -7,7 +7,12 @@ export interface RegisterUserInput {
   password: string;
 }
 
-export interface RegisterUserOutput {
+export interface LoginUserInput {
+  email: string;
+  password: string;
+}
+
+export interface UserOutput {
   success: boolean;
   message: string;
   token?: string;
@@ -19,7 +24,7 @@ export interface RegisterUserOutput {
 }
 
 export class UserService {
-  async registerUser(input: RegisterUserInput): Promise<RegisterUserOutput> {
+  async registerUser(input: RegisterUserInput): Promise<UserOutput> {
     try {
       // Check if user already exists
       const existingUser = await User.findOne({
@@ -58,6 +63,51 @@ export class UserService {
       return {
         success: false,
         message: 'Error registering user',
+      };
+    }
+  }
+
+  async loginUser(input: LoginUserInput): Promise<UserOutput> {
+    try {
+      // Find user by email
+      const user = await User.findOne({ email: input.email });
+
+      // Check if user exists
+      if (!user) {
+        return {
+          success: false,
+          message: 'Invalid email or password',
+        };
+      }
+
+      // Verify password
+      const isPasswordValid = await user.comparePassword(input.password);
+      
+      if (!isPasswordValid) {
+        return {
+          success: false,
+          message: 'Invalid email or password',
+        };
+      }
+
+      // Generate JWT token
+      const token = generateToken(user);
+
+      return {
+        success: true,
+        message: 'Login successful',
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+      };
+    } catch (error) {
+      console.error('Error during login:', error);
+      return {
+        success: false,
+        message: 'Error during login',
       };
     }
   }

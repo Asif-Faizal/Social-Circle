@@ -7,7 +7,12 @@ interface RegisterRequest {
   password: string;
 }
 
-interface RegisterResponse {
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+interface UserResponse {
   success: boolean;
   message: string;
   token: string;
@@ -25,9 +30,17 @@ const userController = new UserController();
 export const userRoutes = {
   // Register user handler
   register: async (
-    call: ServerUnaryCall<RegisterRequest, RegisterResponse>,
-    callback: sendUnaryData<RegisterResponse>
+    call: ServerUnaryCall<RegisterRequest, UserResponse>,
+    callback: sendUnaryData<UserResponse>
   ): Promise<void> => {
     await userController.register(call, callback);
+  },
+
+  // Login user handler
+  login: async (
+    call: ServerUnaryCall<LoginRequest, UserResponse>,
+    callback: sendUnaryData<UserResponse>
+  ): Promise<void> => {
+    await userController.login(call, callback);
   }
 }; 

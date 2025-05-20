@@ -84,11 +84,23 @@ npm start
 
 ### User Service
 
-**Register User**
+***Register User**
 
 - Method: `register`
 - Request:
   - `username`: string
+  - `email`: string
+  - `password`: string
+- Response:
+  - `success`: boolean
+  - `message`: string
+  - `token`: string (JWT token)
+  - `user`: User object with id, username, and email
+
+***Login User**
+
+- Method: `login`
+- Request:
   - `email`: string
   - `password`: string
 - Response:
@@ -103,7 +115,7 @@ The client provides an interactive menu to test gRPC services:
 
 1. Start the server: `npm run server`
 2. Start the client: `npm run client`
-3. Follow the prompts to register a user
+3. Choose option 1 to register a new user or option 2 to login
 
 ## Using gRPC client
 
@@ -122,6 +134,7 @@ The client provides an interactive menu to test gRPC services:
 You can also test the API using grpcurl, a command-line tool for interacting with gRPC services:
 
 1. Install grpcurl:
+
    ```bash
    # macOS
    brew install grpcurl
@@ -131,11 +144,13 @@ You can also test the API using grpcurl, a command-line tool for interacting wit
    ```
 
 2. Register a user (using the proto file directly):
+
    ```bash
-   grpcurl -plaintext -proto src/proto/user.proto -d '{"username": "newuser123", "email": "newuser@example.com", "password": "password123"}' localhost:5000 user.UserService/Register
+   grpcurl -plaintext -proto src/proto/user.proto -d '{"username": "user123", "email": "user@example.com", "password": "password123"}' localhost:5000 user.UserService/Register
    ```
 
    Example successful response:
+
    ```json
    {
      "success": true,
@@ -143,13 +158,35 @@ You can also test the API using grpcurl, a command-line tool for interacting wit
      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
      "user": {
        "id": "682c5d25fef167e8823a0969",
-       "username": "newuser123",
-       "email": "newuser@example.com"
+       "username": "user123",
+       "email": "user@example.com"
      }
    }
    ```
 
-The above command:
-- Uses the `-proto` flag to specify the proto file
-- Provides the request data in the `-d` flag
-- Specifies the service and method to call: `user.UserService/Register`
+3. Login with existing user:
+
+   ```bash
+   grpcurl -plaintext -proto src/proto/user.proto -d '{"email": "user@example.com", "password": "password123"}' localhost:5000 user.UserService/Login
+   ```
+
+   Example successful response:
+
+   ```json
+   {
+     "success": true,
+     "message": "Login successful",
+     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+     "user": {
+       "id": "682c5d25fef167e8823a0969",
+       "username": "user123",
+       "email": "user@example.com"
+     }
+   }
+   ```
+
+The above commands:
+
+- Use the `-proto` flag to specify the proto file
+- Provide the request data in the `-d` flag
+- Specify the service and method to call: `user.UserService/Register` or `user.UserService/Login`

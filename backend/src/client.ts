@@ -53,7 +53,34 @@ function registerUser(username: string, email: string, password: string) {
       console.log('Registration failed:', response.message);
     }
     
-    rl.close();
+    showMenu();
+  });
+}
+
+// Function to login a user
+function loginUser(email: string, password: string) {
+  const userData = { email, password };
+  
+  console.log(`Logging in user: ${email}`);
+  
+  client.login(userData, (error: any, response: any) => {
+    if (error) {
+      console.error('Error:', error);
+      rl.close();
+      return;
+    }
+
+    console.log('Response:', response);
+    
+    if (response.success) {
+      console.log('Login successful');
+      console.log('Token:', response.token);
+      console.log('User:', response.user);
+    } else {
+      console.log('Login failed:', response.message);
+    }
+    
+    showMenu();
   });
 }
 
@@ -61,12 +88,16 @@ function registerUser(username: string, email: string, password: string) {
 function showMenu() {
   console.log('\n--- gRPC Client Menu ---');
   console.log('1. Register a new user');
+  console.log('2. Login to existing account');
   console.log('0. Exit');
   
   rl.question('Select an option: ', (option) => {
     switch (option) {
       case '1':
         promptRegisterUser();
+        break;
+      case '2':
+        promptLoginUser();
         break;
       case '0':
         console.log('Exiting...');
@@ -87,6 +118,15 @@ function promptRegisterUser() {
       rl.question('Enter password: ', (password) => {
         registerUser(username, email, password);
       });
+    });
+  });
+}
+
+// Prompt for user login
+function promptLoginUser() {
+  rl.question('Enter email: ', (email) => {
+    rl.question('Enter password: ', (password) => {
+      loginUser(email, password);
     });
   });
 }

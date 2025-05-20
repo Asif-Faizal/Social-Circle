@@ -5,7 +5,8 @@ import { userRoutes } from './user.routes';
 export const registerRoutes = (server: grpc.Server, services: any): void => {
   // Register user service routes
   server.addService(services.UserService.service, {
-    register: userRoutes.register
+    register: userRoutes.register,
+    login: userRoutes.login
   });
 
   // Add more service routes here as needed

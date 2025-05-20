@@ -4,6 +4,7 @@ package user;
 
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
 }
 
 message RegisterRequest {
@@ -13,6 +14,18 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
+  bool success = 1;
+  string message = 2;
+  string token = 3;
+  User user = 4;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
   bool success = 1;
   string message = 2;
   string token = 3;
