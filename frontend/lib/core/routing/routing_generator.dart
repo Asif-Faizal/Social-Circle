@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../feature/register/screens/enterotp.screen.dart';
 import '../../feature/splash/screens/initial.screen.dart';
 import '../../feature/splash/screens/splash.screen.dart';
+import '../../feature/register/screens/notregistered.screen.dart';
+import 'routing_arguments.dart';
 import 'routing_contants.dart';
 
 class RouteGenerator {
@@ -15,6 +18,10 @@ class RouteGenerator {
         return _buildRoute(const SplashScreen(), settings);
       case RoutingConstants.initialScreen:
         return _buildRoute(const InitialScreen(), settings);
+      case RoutingConstants.notRegisteredScreen:
+        return _buildRoute(NotRegisteredScreen(args: args as NotRegisteredArguments), settings);
+      case RoutingConstants.enterOtpScreen:
+        return _buildRoute(EnterOtpScreen(args: args as EnterOtpArguments), settings);
       default:
         return _errorRoute('No route found', context);
     }

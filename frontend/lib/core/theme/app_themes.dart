@@ -28,6 +28,12 @@ class AppThemes {
       surface: backgroundColor,
     ),
     
+    // Progress indicator theme
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: Colors.white,
+      circularTrackColor: primaryLightColor,
+    ),
+    
     // Font configuration
     fontFamily: 'Inter',
     
@@ -81,6 +87,40 @@ class AppThemes {
           borderRadius: BorderRadius.circular(8.0),
         ),
         elevation: 2.0,
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: primaryColor,
+        textStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w600,
+          fontSize: 16.0,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        elevation: 2.0,
+      ),
+    ),
+
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: primaryColor,
+        textStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w600,
+          fontSize: 16.0,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        side: BorderSide(color: primaryColor),
       ),
     ),
     

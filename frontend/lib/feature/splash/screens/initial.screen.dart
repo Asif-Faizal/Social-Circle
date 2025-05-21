@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/routing/routing_service.dart';
+
+import '../../../core/routing/routing_arguments.dart';
+import '../../../core/routing/routing_contants.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
@@ -6,6 +10,7 @@ class InitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
     final emailController = TextEditingController();
     // Create a form key to manage the form state
     final formKey = GlobalKey<FormState>();
@@ -27,7 +32,7 @@ class InitialScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.05,vertical: size.height * 0.05),
         child: Form(
           key: formKey,
           child: Column(
@@ -35,7 +40,7 @@ class InitialScreen extends StatelessWidget {
             children: [
               Text('Welcome to Social Circle', style: textTheme.displayLarge),
               Text('Enter your email to continue', style: textTheme.bodyLarge),
-              const SizedBox(height: 20),
+              SizedBox(height: size.height * 0.02),
               TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -55,10 +60,7 @@ class InitialScreen extends StatelessWidget {
         extendedIconLabelSpacing: 10,
         onPressed: () {
           if (formKey.currentState!.validate()) {
-            final email = emailController.text.trim();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Valid email: $email')),
-            );
+            NavigationService().navigateTo(RoutingConstants.notRegisteredScreen, arguments: NotRegisteredArguments(email: emailController.text.trim()));
           }
         },
         label: Row(
