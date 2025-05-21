@@ -49,7 +49,7 @@ class NotRegisteredScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(onPressed: () {
-                NavigationService().navigateTo(RoutingConstants.enterOtpScreen, arguments: EnterOtpArguments(email: args.email));
+                NavigationService().navigateTo(RoutingConstants.enterOtpScreen, arguments: EnterOtpArguments(email: args.email, isRegister: true));
               }, child: const Text('Register'))),
             SizedBox(height: size.height * 0.01),
           ],

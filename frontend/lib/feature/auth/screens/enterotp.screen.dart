@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/core/routing/routing_service.dart';
 
 import '../../../core/routing/routing_arguments.dart';
+import '../../../core/routing/routing_contants.dart';
 import '../../../core/theme/app_themes.dart';
 import '../../../core/widgets/error.snackbar.dart';
 import '../../../core/widgets/success.snackbar.dart';
@@ -30,6 +32,7 @@ class EnterOtpScreen extends StatelessWidget {
               listener: (context, state) {
                 state.maybeWhen(
                   otpValidationSuccess: () {
+                    NavigationService().navigateToReplace(RoutingConstants.enterPasswordScreen, arguments: PasswordArguments(email: args.email, isRegister: args.isRegister));
                   },
                   otpValidationFailure: (message) {
                     // Show error message

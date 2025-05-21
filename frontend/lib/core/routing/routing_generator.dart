@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../feature/register/screens/enterotp.screen.dart';
+import '../../feature/auth/screens/enterotp.screen.dart';
+import '../../feature/auth/screens/password.screen.dart';
 import '../../feature/splash/screens/initial.screen.dart';
 import '../../feature/splash/screens/splash.screen.dart';
-import '../../feature/register/screens/notregistered.screen.dart';
+import '../../feature/auth/screens/notregistered.screen.dart';
 import 'routing_arguments.dart';
 import 'routing_contants.dart';
 
@@ -22,6 +23,8 @@ class RouteGenerator {
         return _buildRoute(NotRegisteredScreen(args: args as NotRegisteredArguments), settings);
       case RoutingConstants.enterOtpScreen:
         return _buildRoute(EnterOtpScreen(args: args as EnterOtpArguments), settings);
+      case RoutingConstants.enterPasswordScreen:
+        return _buildRoute(PasswordScreen(args: args as PasswordArguments), settings);
       default:
         return _errorRoute('No route found', context);
     }

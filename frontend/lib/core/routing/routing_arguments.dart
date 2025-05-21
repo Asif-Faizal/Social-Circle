@@ -18,8 +18,19 @@ class NotRegisteredArguments extends RouteArguments {
 
 class EnterOtpArguments extends RouteArguments {
   final String email;
+  final bool isRegister;
 
-  const EnterOtpArguments({required this.email});
+  const EnterOtpArguments({required this.email, required this.isRegister});
+
+  @override
+  List<Object?> get props => [email, isRegister];
+}
+
+class PasswordArguments extends RouteArguments {
+  final String email;
+  final bool isRegister;
+
+  const PasswordArguments({required this.email, required this.isRegister});
 
   @override
   List<Object?> get props => [email];
