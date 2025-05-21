@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/routing/routing_contants.dart';
+import 'package:frontend/core/routing/routing_generator.dart';
+import 'package:frontend/core/routing/routing_service.dart';
 import 'core/theme/app_themes.dart';
 
 void main() {
@@ -14,7 +17,9 @@ class MyApp extends StatelessWidget {
       title: 'Social Circle',
       debugShowCheckedModeBanner: false,
       theme: AppThemes.lightTheme,
-      home: const ThemeShowcasePage(),
+      navigatorKey: NavigationService().navigatorKey,
+      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings, context),
+      initialRoute: RoutingConstants.splashScreen,
     );
   }
 }
