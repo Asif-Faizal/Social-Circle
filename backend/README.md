@@ -44,6 +44,12 @@ The project follows SOLID principles with a clear separation of concerns:
    JWT_SECRET=social-circle-jwt-secret
    TOKEN_EXPIRATION=1h
    PORT=5000
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_SECURE=false
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   EMAIL_FROM=your-email@gmail.com
    ```
 
 ### Development
@@ -109,13 +115,36 @@ npm start
   - `token`: string (JWT token)
   - `user`: User object with id, username, and email
 
+***Send OTP**
+
+- Method: `sendOTP`
+- Request:
+  - `email`: string
+- Response:
+  - `success`: boolean
+  - `message`: string
+
+***Verify OTP**
+
+- Method: `verifyOTP`
+- Request:
+  - `email`: string
+  - `otp`: string
+- Response:
+  - `success`: boolean
+  - `message`: string
+
 ## Using the client
 
 The client provides an interactive menu to test gRPC services:
 
 1. Start the server: `npm run server`
 2. Start the client: `npm run client`
-3. Choose option 1 to register a new user or option 2 to login
+3. Choose an option:
+   - Option 1: Register a new user
+   - Option 2: Login with existing credentials
+   - Option 3: Send OTP email to registered email
+   - Option 4: Verify OTP code received in email
 
 ## Using gRPC client
 
@@ -170,23 +199,35 @@ You can also test the API using grpcurl, a command-line tool for interacting wit
    grpcurl -plaintext -proto src/proto/user.proto -d '{"email": "user@example.com", "password": "password123"}' localhost:5000 user.UserService/Login
    ```
 
-   Example successful response:
+4. Send OTP to registered email:
 
-   ```json
-   {
-     "success": true,
-     "message": "Login successful",
-     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-     "user": {
-       "id": "682c5d25fef167e8823a0969",
-       "username": "user123",
-       "email": "user@example.com"
-     }
-   }
+   ```bash
+   grpcurl -plaintext -proto src/proto/user.proto -d '{"email": "user@example.com"}' localhost:5000 user.UserService/SendOTP
+   ```
+
+5. Verify OTP received in email:
+
+   ```bash
+   grpcurl -plaintext -proto src/proto/user.proto -d '{"email": "user@example.com", "otp": "123456"}' localhost:5000 user.UserService/VerifyOTP
    ```
 
 The above commands:
 
 - Use the `-proto` flag to specify the proto file
 - Provide the request data in the `-d` flag
-- Specify the service and method to call: `user.UserService/Register` or `user.UserService/Login`
+- Specify the service and method to call
+
+## Email Configuration
+
+For the OTP functionality to work, you need to configure email settings in the `.env` file:
+
+```sh
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+EMAIL_FROM=your-email@gmail.com
+```
+
+**Note:** For Gmail, you'll need to use an App Password instead of your regular password. You can generate one at <https://myaccount.google.com/apppasswords> after enabling 2-Factor Authentication.

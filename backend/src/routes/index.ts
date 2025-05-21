@@ -6,7 +6,9 @@ export const registerRoutes = (server: grpc.Server, services: any): void => {
   // Register user service routes
   server.addService(services.UserService.service, {
     register: userRoutes.register,
-    login: userRoutes.login
+    login: userRoutes.login,
+    sendOTP: userRoutes.sendOTP,
+    verifyOTP: userRoutes.verifyOTP
   });
 
   // Add more service routes here as needed

@@ -12,6 +12,15 @@ interface LoginRequest {
   password: string;
 }
 
+interface SendOTPRequest {
+  email: string;
+}
+
+interface VerifyOTPRequest {
+  email: string;
+  otp: string;
+}
+
 interface UserResponse {
   success: boolean;
   message: string;
@@ -21,6 +30,11 @@ interface UserResponse {
     username: string;
     email: string;
   };
+}
+
+interface OTPResponse {
+  success: boolean;
+  message: string;
 }
 
 // Initialize controller
@@ -42,5 +56,21 @@ export const userRoutes = {
     callback: sendUnaryData<UserResponse>
   ): Promise<void> => {
     await userController.login(call, callback);
+  },
+
+  // Send OTP handler
+  sendOTP: async (
+    call: ServerUnaryCall<SendOTPRequest, OTPResponse>,
+    callback: sendUnaryData<OTPResponse>
+  ): Promise<void> => {
+    await userController.sendOTP(call, callback);
+  },
+
+  // Verify OTP handler
+  verifyOTP: async (
+    call: ServerUnaryCall<VerifyOTPRequest, OTPResponse>,
+    callback: sendUnaryData<OTPResponse>
+  ): Promise<void> => {
+    await userController.verifyOTP(call, callback);
   }
 }; 

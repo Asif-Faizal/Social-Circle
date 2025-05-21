@@ -15,7 +15,7 @@ if (fs.existsSync(envPath)) {
 
 export default {
   // MongoDB connection string
-  mongodbUrl: process.env.MONGODB_URL || 'fallback-connection-string',
+  mongodbUrl: process.env.MONGODB_URL || 'mongodb+srv://socialcirclemessaging:WIYTxZ2IluAl0bEW@production.icyn4aj.mongodb.net/?retryWrites=true&w=majority&appName=Production',
   
   // JWT settings
   jwt: {
@@ -25,4 +25,22 @@ export default {
   
   // Server settings
   port: parseInt(process.env.PORT || '5000', 10),
+
+  // Email settings
+  email: {
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT || '587', 10),
+    secure: process.env.EMAIL_SECURE === 'true',
+    auth: {
+      user: process.env.EMAIL_USER || 'socialcircle.messaging@gmail.com',
+      pass: process.env.EMAIL_PASSWORD || '',
+    },
+    from: process.env.EMAIL_FROM || 'socialcircle.messaging@gmail.com',
+  },
+
+  // OTP settings
+  otp: {
+    length: 6,
+    expiresIn: 10 * 60 * 1000, // 10 minutes in milliseconds
+  },
 }; 

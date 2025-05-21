@@ -1,5 +1,6 @@
 import User, { IUser } from '../models/user.model';
 import { generateToken } from '../utils/jwt';
+import { generateOTP, saveOTP, sendOTPEmail, verifyOTP } from '../utils/email';
 
 export interface RegisterUserInput {
   username: string;
@@ -12,6 +13,15 @@ export interface LoginUserInput {
   password: string;
 }
 
+export interface SendOTPInput {
+  email: string;
+}
+
+export interface VerifyOTPInput {
+  email: string;
+  otp: string;
+}
+
 export interface UserOutput {
   success: boolean;
   message: string;
@@ -21,6 +31,11 @@ export interface UserOutput {
     username: string;
     email: string;
   };
+}
+
+export interface OTPOutput {
+  success: boolean;
+  message: string;
 }
 
 export class UserService {
@@ -108,6 +123,62 @@ export class UserService {
       return {
         success: false,
         message: 'Error during login',
+      };
+    }
+  }
+
+  async sendOTP(input: SendOTPInput): Promise<OTPOutput> {
+    try {
+      // Generate OTP
+      const otp = generateOTP();
+
+      // Save OTP to database
+      await saveOTP(input.email, otp);
+
+      // Send OTP via email
+      const emailSent = await sendOTPEmail(input.email, otp);
+
+      if (!emailSent) {
+        return {
+          success: false,
+          message: 'Failed to send OTP email',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'OTP sent successfully',
+      };
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      return {
+        success: false,
+        message: 'Error sending OTP',
+      };
+    }
+  }
+
+  async verifyOTP(input: VerifyOTPInput): Promise<OTPOutput> {
+    try {
+      // Verify OTP
+      const isValid = await verifyOTP(input.email, input.otp);
+
+      if (!isValid) {
+        return {
+          success: false,
+          message: 'Invalid or expired OTP',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'OTP verified successfully',
+      };
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      return {
+        success: false,
+        message: 'Error verifying OTP',
       };
     }
   }

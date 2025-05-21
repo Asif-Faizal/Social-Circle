@@ -1,5 +1,5 @@
 import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
-import { UserService, RegisterUserInput, LoginUserInput } from '../services/user.service';
+import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput } from '../services/user.service';
 
 interface RegisterRequest {
   username: string;
@@ -12,6 +12,15 @@ interface LoginRequest {
   password: string;
 }
 
+interface SendOTPRequest {
+  email: string;
+}
+
+interface VerifyOTPRequest {
+  email: string;
+  otp: string;
+}
+
 interface UserResponse {
   success: boolean;
   message: string;
@@ -21,6 +30,11 @@ interface UserResponse {
     username: string;
     email: string;
   };
+}
+
+interface OTPResponse {
+  success: boolean;
+  message: string;
 }
 
 export class UserController {
@@ -136,6 +150,72 @@ export class UserController {
       });
     } catch (error) {
       console.error('Error in login controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async sendOTP(
+    call: ServerUnaryCall<SendOTPRequest, OTPResponse>,
+    callback: sendUnaryData<OTPResponse>
+  ): Promise<void> {
+    try {
+      const { email } = call.request;
+
+      // Validate input
+      if (!email) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'Email is required',
+        });
+        return;
+      }
+
+      const input: SendOTPInput = { email };
+
+      const result = await this.userService.sendOTP(input);
+
+      callback(null, {
+        success: result.success,
+        message: result.message,
+      });
+    } catch (error) {
+      console.error('Error in sendOTP controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async verifyOTP(
+    call: ServerUnaryCall<VerifyOTPRequest, OTPResponse>,
+    callback: sendUnaryData<OTPResponse>
+  ): Promise<void> {
+    try {
+      const { email, otp } = call.request;
+
+      // Validate input
+      if (!email || !otp) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'Email and OTP are required',
+        });
+        return;
+      }
+
+      const input: VerifyOTPInput = { email, otp };
+
+      const result = await this.userService.verifyOTP(input);
+
+      callback(null, {
+        success: result.success,
+        message: result.message,
+      });
+    } catch (error) {
+      console.error('Error in verifyOTP controller:', error);
       callback({
         code: 13, // INTERNAL
         message: 'Internal server error',

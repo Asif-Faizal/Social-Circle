@@ -5,6 +5,8 @@ package user;
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc SendOTP (SendOTPRequest) returns (SendOTPResponse);
+  rpc VerifyOTP (VerifyOTPRequest) returns (VerifyOTPResponse);
 }
 
 message RegisterRequest {
@@ -30,6 +32,25 @@ message LoginResponse {
   string message = 2;
   string token = 3;
   User user = 4;
+}
+
+message SendOTPRequest {
+  string email = 1;
+}
+
+message SendOTPResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message VerifyOTPRequest {
+  string email = 1;
+  string otp = 2;
+}
+
+message VerifyOTPResponse {
+  bool success = 1;
+  string message = 2;
 }
 
 message User {
