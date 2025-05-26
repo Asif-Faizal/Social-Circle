@@ -16,6 +16,18 @@ interface LoginRequest {
   device_os: string;
 }
 
+interface UserResponse {
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
+
 interface SendOTPRequest {
   email: string;
   device_id: string;
@@ -29,17 +41,6 @@ interface VerifyOTPRequest {
   device_os: string;
 }
 
-interface UserResponse {
-  success: boolean;
-  message: string;
-  token: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-  };
-}
-
 interface OTPResponse {
   success: boolean;
   message: string;
@@ -47,6 +48,18 @@ interface OTPResponse {
 
 interface GetActiveSessionsRequest {
   user_id: string;
+}
+
+interface ActiveSessionsResponse {
+  success: boolean;
+  message: string;
+  sessions: Array<{
+    id: string;
+    device_id: string;
+    device_os: string;
+    last_activity: string;
+    is_active: boolean;
+  }>;
 }
 
 interface LogoutDeviceRequest {
@@ -58,22 +71,23 @@ interface LogoutAllDevicesRequest {
   user_id: string;
 }
 
-interface ActiveSessionsResponse {
-  success: boolean;
-  message: string;
-  sessions: {
-    id: string;
-    device_id: string;
-    device_os: string;
-    last_activity: string;
-    is_active: boolean;
-  }[];
-}
-
 interface LogoutResponse {
   success: boolean;
   message: string;
   logged_out_count?: number;
+}
+
+interface RefreshTokenRequest {
+  refresh_token: string;
+  device_id: string;
+  device_os: string;
+}
+
+interface RefreshTokenResponse {
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
 }
 
 // Initialize controller
@@ -135,5 +149,13 @@ export const userRoutes = {
     callback: sendUnaryData<LogoutResponse>
   ): Promise<void> => {
     await userController.logoutAllDevices(call, callback);
+  },
+
+  // Refresh token handler
+  refreshToken: async (
+    call: ServerUnaryCall<RefreshTokenRequest, RefreshTokenResponse>,
+    callback: sendUnaryData<RefreshTokenResponse>
+  ): Promise<void> => {
+    await userController.refreshToken(call, callback);
   }
 }; 

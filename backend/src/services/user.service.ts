@@ -1,5 +1,5 @@
 import User, { IUser } from '../models/user.model';
-import { generateToken } from '../utils/jwt';
+import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwt';
 import { generateOTP, saveOTP, sendOTPEmail, verifyOTP } from '../utils/email';
 import { DeviceSessionService, DeviceInfo } from './device-session.service';
 
@@ -14,6 +14,12 @@ export interface RegisterUserInput {
 export interface LoginUserInput {
   email: string;
   password: string;
+  deviceId: string;
+  deviceOS: string;
+}
+
+export interface RefreshTokenInput {
+  refreshToken: string;
   deviceId: string;
   deviceOS: string;
 }
@@ -34,7 +40,8 @@ export interface VerifyOTPInput {
 export interface UserOutput {
   success: boolean;
   message: string;
-  token?: string;
+  accessToken?: string;
+  refreshToken?: string;
   user?: {
     id: string;
     username: string;
@@ -124,13 +131,15 @@ export class UserService {
       // Create device session
       await this.deviceSessionService.createOrUpdateSession(user.id, deviceInfo);
 
-      // Generate JWT token
-      const token = generateToken(user);
+      // Generate tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
 
       return {
         success: true,
         message: 'User registered successfully',
-        token,
+        accessToken,
+        refreshToken,
         user: {
           id: user.id,
           username: user.username,
@@ -185,13 +194,15 @@ export class UserService {
       // Create or update device session
       await this.deviceSessionService.createOrUpdateSession(user.id, deviceInfo);
 
-      // Generate JWT token
-      const token = generateToken(user);
+      // Generate tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
 
       return {
         success: true,
         message: 'Login successful',
-        token,
+        accessToken,
+        refreshToken,
         user: {
           id: user.id,
           username: user.username,
@@ -203,6 +214,70 @@ export class UserService {
       return {
         success: false,
         message: 'Error during login',
+      };
+    }
+  }
+
+  async refreshToken(input: RefreshTokenInput): Promise<UserOutput> {
+    try {
+      // Validate device info
+      const deviceInfo: DeviceInfo = {
+        deviceId: input.deviceId,
+        deviceOS: input.deviceOS,
+      };
+
+      if (!this.deviceSessionService.validateDeviceInfo(deviceInfo)) {
+        return {
+          success: false,
+          message: 'Invalid device information',
+        };
+      }
+
+      // Verify refresh token
+      const decoded = verifyToken(input.refreshToken);
+      
+      if (decoded.type !== 'refresh') {
+        return {
+          success: false,
+          message: 'Invalid refresh token',
+        };
+      }
+
+      // Find user
+      const user = await User.findById(decoded.id);
+      
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found',
+        };
+      }
+
+      // Verify device session exists
+      const session = await this.deviceSessionService.getSession(user.id, deviceInfo.deviceId);
+      
+      if (!session) {
+        return {
+          success: false,
+          message: 'Invalid device session',
+        };
+      }
+
+      // Generate new tokens
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+
+      return {
+        success: true,
+        message: 'Token refreshed successfully',
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return {
+        success: false,
+        message: 'Error refreshing token',
       };
     }
   }

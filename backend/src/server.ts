@@ -44,7 +44,8 @@ async function startServer() {
       VerifyOTP: userRoutes.verifyOTP,
       GetActiveSessions: userRoutes.getActiveSessions,
       LogoutDevice: userRoutes.logoutDevice,
-      LogoutAllDevices: userRoutes.logoutAllDevices
+      LogoutAllDevices: userRoutes.logoutAllDevices,
+      RefreshToken: userRoutes.refreshToken
     });
 
     // Add reflection service

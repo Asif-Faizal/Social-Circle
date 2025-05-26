@@ -1,5 +1,5 @@
 import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
-import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput, GetActiveSessionsInput, LogoutDeviceInput, LogoutAllDevicesInput } from '../services/user.service';
+import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput, GetActiveSessionsInput, LogoutDeviceInput, LogoutAllDevicesInput, RefreshTokenInput } from '../services/user.service';
 
 interface RegisterRequest {
   username: string;
@@ -32,7 +32,8 @@ interface VerifyOTPRequest {
 interface UserResponse {
   success: boolean;
   message: string;
-  token: string;
+  access_token: string;
+  refresh_token: string;
   user: {
     id: string;
     username: string;
@@ -76,6 +77,19 @@ interface LogoutResponse {
   logged_out_count?: number;
 }
 
+interface RefreshTokenRequest {
+  refresh_token: string;
+  device_id: string;
+  device_os: string;
+}
+
+interface RefreshTokenResponse {
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
+}
+
 export class UserController {
   private userService: UserService;
 
@@ -113,7 +127,8 @@ export class UserController {
         callback(null, {
           success: false,
           message: result.message,
-          token: '',
+          access_token: '',
+          refresh_token: '',
           user: {
             id: '',
             username: '',
@@ -126,7 +141,8 @@ export class UserController {
       callback(null, {
         success: true,
         message: result.message,
-        token: result.token || '',
+        access_token: result.accessToken || '',
+        refresh_token: result.refreshToken || '',
         user: result.user || {
           id: '',
           username: '',
@@ -171,7 +187,8 @@ export class UserController {
         callback(null, {
           success: false,
           message: result.message,
-          token: '',
+          access_token: '',
+          refresh_token: '',
           user: {
             id: '',
             username: '',
@@ -184,7 +201,8 @@ export class UserController {
       callback(null, {
         success: true,
         message: result.message,
-        token: result.token || '',
+        access_token: result.accessToken || '',
+        refresh_token: result.refreshToken || '',
         user: result.user || {
           id: '',
           username: '',
@@ -378,6 +396,55 @@ export class UserController {
       });
     } catch (error) {
       console.error('Error in logoutAllDevices controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async refreshToken(
+    call: ServerUnaryCall<RefreshTokenRequest, RefreshTokenResponse>,
+    callback: sendUnaryData<RefreshTokenResponse>
+  ): Promise<void> {
+    try {
+      const { refresh_token, device_id, device_os } = call.request;
+
+      // Validate input
+      if (!refresh_token || !device_id || !device_os) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'Refresh token, device_id, and device_os are required',
+        });
+        return;
+      }
+
+      const input: RefreshTokenInput = {
+        refreshToken: refresh_token,
+        deviceId: device_id,
+        deviceOS: device_os,
+      };
+
+      const result = await this.userService.refreshToken(input);
+
+      if (!result.success) {
+        callback(null, {
+          success: false,
+          message: result.message,
+          access_token: '',
+          refresh_token: '',
+        });
+        return;
+      }
+
+      callback(null, {
+        success: true,
+        message: result.message,
+        access_token: result.accessToken || '',
+        refresh_token: result.refreshToken || '',
+      });
+    } catch (error) {
+      console.error('Error in refresh token controller:', error);
       callback({
         code: 13, // INTERNAL
         message: 'Internal server error',

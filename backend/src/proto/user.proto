@@ -10,6 +10,7 @@ service UserService {
   rpc GetActiveSessions (GetActiveSessionsRequest) returns (GetActiveSessionsResponse);
   rpc LogoutDevice (LogoutDeviceRequest) returns (LogoutDeviceResponse);
   rpc LogoutAllDevices (LogoutAllDevicesRequest) returns (LogoutAllDevicesResponse);
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
 }
 
 message RegisterRequest {
@@ -23,8 +24,9 @@ message RegisterRequest {
 message RegisterResponse {
   bool success = 1;
   string message = 2;
-  string token = 3;
-  User user = 4;
+  string access_token = 3;
+  string refresh_token = 4;
+  User user = 5;
 }
 
 message LoginRequest {
@@ -37,8 +39,9 @@ message LoginRequest {
 message LoginResponse {
   bool success = 1;
   string message = 2;
-  string token = 3;
-  User user = 4;
+  string access_token = 3;
+  string refresh_token = 4;
+  User user = 5;
 }
 
 message SendOTPRequest {
@@ -92,6 +95,19 @@ message LogoutAllDevicesResponse {
   bool success = 1;
   string message = 2;
   int32 logged_out_count = 3;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+  string device_id = 2;
+  string device_os = 3;
+}
+
+message RefreshTokenResponse {
+  bool success = 1;
+  string message = 2;
+  string access_token = 3;
+  string refresh_token = 4;
 }
 
 message User {

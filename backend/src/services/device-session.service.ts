@@ -123,4 +123,20 @@ export class DeviceSessionService {
       validOS.includes(deviceInfo.deviceOS)
     );
   }
+
+  /**
+   * Get a specific device session
+   */
+  async getSession(userId: string, deviceId: string): Promise<IDeviceSession | null> {
+    try {
+      return await DeviceSession.findOne({
+        userId,
+        deviceId,
+        isActive: true,
+      });
+    } catch (error) {
+      console.error('Error fetching device session:', error);
+      throw error;
+    }
+  }
 } 
