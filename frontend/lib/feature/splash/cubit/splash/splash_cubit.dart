@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/device/device_info_cubit.dart';
+import '../deviceInfo/device_info_cubit.dart';
 import 'splash_state.dart';
 import 'package:flutter/foundation.dart';
 class SplashCubit extends Cubit<SplashState> {
@@ -12,9 +12,9 @@ class SplashCubit extends Cubit<SplashState> {
     try {
       emit(const SplashState.loading());
       
-      // Get device ID
-      final deviceId = await deviceInfoCubit.getDeviceInfo();
-      debugPrint('Device ID: $deviceId');
+      // Get device info
+      await deviceInfoCubit.getDeviceInfo();
+      debugPrint('Device info request completed');
       
       // Start timer after getting device ID
       await Future.delayed(const Duration(milliseconds: 1500));

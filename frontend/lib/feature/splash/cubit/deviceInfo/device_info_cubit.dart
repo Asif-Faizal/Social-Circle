@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'device_info_state.dart';
@@ -23,6 +24,10 @@ class DeviceInfoCubit extends Cubit<DeviceInfoState> {
         osVersion: result['osVersion']?.toString() ?? '',
         platform: result['platform']?.toString() ?? '',
       ));
+      debugPrint('Device info: $result');
+      debugPrint('Device ID: ${result['deviceId']?.toString()}');
+      debugPrint('OS Version: ${result['osVersion']?.toString()}');
+      debugPrint('Platform: ${result['platform']?.toString()}');
     } on PlatformException catch (e) {
       emit(DeviceInfoState.error(e.message ?? 'An error occurred'));
     } catch (e) {

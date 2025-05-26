@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/routing/routing_service.dart';
-import '../../../core/device/device_info_cubit.dart';
+import '../../../core/di/injection_container.dart';
 import '../cubit/splash/splash_cubit.dart';
 import '../cubit/splash/splash_state.dart';
 
@@ -14,19 +14,12 @@ class SplashScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final textTheme = Theme.of(context).textTheme;
     
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => DeviceInfoCubit()),
-        BlocProvider(
-          create: (context) {
-            final deviceInfoCubit = context.read<DeviceInfoCubit>();
-            final cubit = SplashCubit(deviceInfoCubit: deviceInfoCubit);
-            // Initialize app and get device ID
-            cubit.initializeApp();
-            return cubit;
-          },
-        ),
-      ],
+    return BlocProvider<SplashCubit>(
+      create: (_) {
+        final cubit = sl<SplashCubit>();
+        cubit.initializeApp();
+        return cubit;
+      },
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
           state.maybeWhen(
