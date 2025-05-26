@@ -5,20 +5,28 @@ interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface LoginRequest {
   email: string;
   password: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface SendOTPRequest {
   email: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface VerifyOTPRequest {
   email: string;
   otp: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface UserResponse {
@@ -35,6 +43,37 @@ interface UserResponse {
 interface OTPResponse {
   success: boolean;
   message: string;
+}
+
+interface GetActiveSessionsRequest {
+  user_id: string;
+}
+
+interface LogoutDeviceRequest {
+  user_id: string;
+  device_id: string;
+}
+
+interface LogoutAllDevicesRequest {
+  user_id: string;
+}
+
+interface ActiveSessionsResponse {
+  success: boolean;
+  message: string;
+  sessions: {
+    id: string;
+    device_id: string;
+    device_os: string;
+    last_activity: string;
+    is_active: boolean;
+  }[];
+}
+
+interface LogoutResponse {
+  success: boolean;
+  message: string;
+  logged_out_count?: number;
 }
 
 // Initialize controller
@@ -72,5 +111,29 @@ export const userRoutes = {
     callback: sendUnaryData<OTPResponse>
   ): Promise<void> => {
     await userController.verifyOTP(call, callback);
+  },
+
+  // Get active sessions handler
+  getActiveSessions: async (
+    call: ServerUnaryCall<GetActiveSessionsRequest, ActiveSessionsResponse>,
+    callback: sendUnaryData<ActiveSessionsResponse>
+  ): Promise<void> => {
+    await userController.getActiveSessions(call, callback);
+  },
+
+  // Logout device handler
+  logoutDevice: async (
+    call: ServerUnaryCall<LogoutDeviceRequest, LogoutResponse>,
+    callback: sendUnaryData<LogoutResponse>
+  ): Promise<void> => {
+    await userController.logoutDevice(call, callback);
+  },
+
+  // Logout all devices handler
+  logoutAllDevices: async (
+    call: ServerUnaryCall<LogoutAllDevicesRequest, LogoutResponse>,
+    callback: sendUnaryData<LogoutResponse>
+  ): Promise<void> => {
+    await userController.logoutAllDevices(call, callback);
   }
 }; 

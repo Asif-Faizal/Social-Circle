@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import config from '../config/config';
 import otpGenerator from 'otp-generator';
 import OTP from '../models/otp.model';
+import { DeviceInfo } from '../services/device-session.service';
 
 // Create nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -25,9 +26,16 @@ export const generateOTP = (): string => {
 };
 
 // Save OTP to database
-export const saveOTP = async (email: string, otp: string): Promise<void> => {
-  // Delete any existing OTPs for this email
-  await OTP.deleteMany({ email });
+export const saveOTP = async (
+  email: string,
+  otp: string,
+  deviceInfo: DeviceInfo
+): Promise<void> => {
+  // Delete any existing OTPs for this email and device
+  await OTP.deleteMany({ 
+    email, 
+    deviceId: deviceInfo.deviceId 
+  });
 
   // Calculate expiration time
   const expiresAt = new Date();
@@ -38,6 +46,8 @@ export const saveOTP = async (email: string, otp: string): Promise<void> => {
     email,
     otp,
     expiresAt,
+    deviceId: deviceInfo.deviceId,
+    deviceOS: deviceInfo.deviceOS,
   });
 };
 
@@ -77,13 +87,15 @@ export const sendOTPEmail = async (
 // Verify OTP
 export const verifyOTP = async (
   email: string,
-  otp: string
+  otp: string,
+  deviceInfo: DeviceInfo
 ): Promise<boolean> => {
   try {
-    // Find the OTP record
+    // Find the OTP record for the specific email, OTP, and device
     const otpRecord = await OTP.findOne({
       email,
       otp,
+      deviceId: deviceInfo.deviceId,
       expiresAt: { $gt: new Date() }, // Not expired
       isVerified: false, // Not already used
     });

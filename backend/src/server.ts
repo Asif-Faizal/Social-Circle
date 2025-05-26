@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
+import { ReflectionService } from '@grpc/reflection';
 import path from 'path';
 import { connectToDatabase, closeDatabase } from './utils/database';
 import config from './config/config';
@@ -35,13 +36,20 @@ async function startServer() {
     // Create gRPC server
     const server = new grpc.Server();
 
-    // Directly add the service
+    // Add user service
     server.addService(userProto.UserService.service, {
       Register: userRoutes.register,
       Login: userRoutes.login,
       SendOTP: userRoutes.sendOTP,
-      VerifyOTP: userRoutes.verifyOTP
+      VerifyOTP: userRoutes.verifyOTP,
+      GetActiveSessions: userRoutes.getActiveSessions,
+      LogoutDevice: userRoutes.logoutDevice,
+      LogoutAllDevices: userRoutes.logoutAllDevices
     });
+
+    // Add reflection service
+    const reflectionService = new ReflectionService(packageDefinition);
+    reflectionService.addToServer(server);
 
     // Start server
     server.bindAsync(

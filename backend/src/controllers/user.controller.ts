@@ -1,24 +1,32 @@
 import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
-import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput } from '../services/user.service';
+import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput, GetActiveSessionsInput, LogoutDeviceInput, LogoutAllDevicesInput } from '../services/user.service';
 
 interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface LoginRequest {
   email: string;
   password: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface SendOTPRequest {
   email: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface VerifyOTPRequest {
   email: string;
   otp: string;
+  device_id: string;
+  device_os: string;
 }
 
 interface UserResponse {
@@ -37,6 +45,37 @@ interface OTPResponse {
   message: string;
 }
 
+interface GetActiveSessionsRequest {
+  user_id: string;
+}
+
+interface LogoutDeviceRequest {
+  user_id: string;
+  device_id: string;
+}
+
+interface LogoutAllDevicesRequest {
+  user_id: string;
+}
+
+interface ActiveSessionsResponse {
+  success: boolean;
+  message: string;
+  sessions: {
+    id: string;
+    device_id: string;
+    device_os: string;
+    last_activity: string;
+    is_active: boolean;
+  }[];
+}
+
+interface LogoutResponse {
+  success: boolean;
+  message: string;
+  logged_out_count?: number;
+}
+
 export class UserController {
   private userService: UserService;
 
@@ -49,13 +88,13 @@ export class UserController {
     callback: sendUnaryData<UserResponse>
   ): Promise<void> {
     try {
-      const { username, email, password } = call.request;
+      const { username, email, password, device_id, device_os } = call.request;
 
       // Validate input
-      if (!username || !email || !password) {
+      if (!username || !email || !password || !device_id || !device_os) {
         callback({
           code: 3, // INVALID_ARGUMENT
-          message: 'Username, email, and password are required',
+          message: 'Username, email, password, device_id, and device_os are required',
         });
         return;
       }
@@ -64,6 +103,8 @@ export class UserController {
         username,
         email,
         password,
+        deviceId: device_id,
+        deviceOS: device_os,
       };
 
       const result = await this.userService.registerUser(input);
@@ -106,13 +147,13 @@ export class UserController {
     callback: sendUnaryData<UserResponse>
   ): Promise<void> {
     try {
-      const { email, password } = call.request;
+      const { email, password, device_id, device_os } = call.request;
 
       // Validate input
-      if (!email || !password) {
+      if (!email || !password || !device_id || !device_os) {
         callback({
           code: 3, // INVALID_ARGUMENT
-          message: 'Email and password are required',
+          message: 'Email, password, device_id, and device_os are required',
         });
         return;
       }
@@ -120,6 +161,8 @@ export class UserController {
       const input: LoginUserInput = {
         email,
         password,
+        deviceId: device_id,
+        deviceOS: device_os,
       };
 
       const result = await this.userService.loginUser(input);
@@ -162,18 +205,22 @@ export class UserController {
     callback: sendUnaryData<OTPResponse>
   ): Promise<void> {
     try {
-      const { email } = call.request;
+      const { email, device_id, device_os } = call.request;
 
       // Validate input
-      if (!email) {
+      if (!email || !device_id || !device_os) {
         callback({
           code: 3, // INVALID_ARGUMENT
-          message: 'Email is required',
+          message: 'Email, device_id, and device_os are required',
         });
         return;
       }
 
-      const input: SendOTPInput = { email };
+      const input: SendOTPInput = { 
+        email, 
+        deviceId: device_id, 
+        deviceOS: device_os 
+      };
 
       const result = await this.userService.sendOTP(input);
 
@@ -195,18 +242,23 @@ export class UserController {
     callback: sendUnaryData<OTPResponse>
   ): Promise<void> {
     try {
-      const { email, otp } = call.request;
+      const { email, otp, device_id, device_os } = call.request;
 
       // Validate input
-      if (!email || !otp) {
+      if (!email || !otp || !device_id || !device_os) {
         callback({
           code: 3, // INVALID_ARGUMENT
-          message: 'Email and OTP are required',
+          message: 'Email, otp, device_id, and device_os are required',
         });
         return;
       }
 
-      const input: VerifyOTPInput = { email, otp };
+      const input: VerifyOTPInput = { 
+        email, 
+        otp, 
+        deviceId: device_id, 
+        deviceOS: device_os 
+      };
 
       const result = await this.userService.verifyOTP(input);
 
@@ -216,6 +268,116 @@ export class UserController {
       });
     } catch (error) {
       console.error('Error in verifyOTP controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async getActiveSessions(
+    call: ServerUnaryCall<GetActiveSessionsRequest, ActiveSessionsResponse>,
+    callback: sendUnaryData<ActiveSessionsResponse>
+  ): Promise<void> {
+    try {
+      const { user_id } = call.request;
+
+      // Validate input
+      if (!user_id) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'User ID is required',
+        });
+        return;
+      }
+
+      const input: GetActiveSessionsInput = { userId: user_id };
+
+      const result = await this.userService.getActiveSessions(input);
+
+      callback(null, {
+        success: result.success,
+        message: result.message,
+        sessions: result.sessions?.map(session => ({
+          id: session.id,
+          device_id: session.deviceId,
+          device_os: session.deviceOS,
+          last_activity: session.lastActivity,
+          is_active: session.isActive,
+        })) || [],
+      });
+    } catch (error) {
+      console.error('Error in getActiveSessions controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async logoutDevice(
+    call: ServerUnaryCall<LogoutDeviceRequest, LogoutResponse>,
+    callback: sendUnaryData<LogoutResponse>
+  ): Promise<void> {
+    try {
+      const { user_id, device_id } = call.request;
+
+      // Validate input
+      if (!user_id || !device_id) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'User ID and device ID are required',
+        });
+        return;
+      }
+
+      const input: LogoutDeviceInput = { 
+        userId: user_id, 
+        deviceId: device_id 
+      };
+
+      const result = await this.userService.logoutDevice(input);
+
+      callback(null, {
+        success: result.success,
+        message: result.message,
+      });
+    } catch (error) {
+      console.error('Error in logoutDevice controller:', error);
+      callback({
+        code: 13, // INTERNAL
+        message: 'Internal server error',
+      });
+    }
+  }
+
+  async logoutAllDevices(
+    call: ServerUnaryCall<LogoutAllDevicesRequest, LogoutResponse>,
+    callback: sendUnaryData<LogoutResponse>
+  ): Promise<void> {
+    try {
+      const { user_id } = call.request;
+
+      // Validate input
+      if (!user_id) {
+        callback({
+          code: 3, // INVALID_ARGUMENT
+          message: 'User ID is required',
+        });
+        return;
+      }
+
+      const input: LogoutAllDevicesInput = { userId: user_id };
+
+      const result = await this.userService.logoutAllDevices(input);
+
+      callback(null, {
+        success: result.success,
+        message: result.message,
+        logged_out_count: result.loggedOutCount,
+      });
+    } catch (error) {
+      console.error('Error in logoutAllDevices controller:', error);
       callback({
         code: 13, // INTERNAL
         message: 'Internal server error',

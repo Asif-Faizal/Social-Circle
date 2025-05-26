@@ -6,6 +6,8 @@ export interface IOTP extends Document {
   createdAt: Date;
   expiresAt: Date;
   isVerified: boolean;
+  deviceId: string;
+  deviceOS: string;
 }
 
 const OTPSchema: Schema = new Schema(
@@ -31,6 +33,17 @@ const OTPSchema: Schema = new Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    deviceId: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    deviceOS: {
+      type: String,
+      required: true,
+      trim: true,
+      enum: ['iOS', 'Android', 'Web', 'Desktop'],
     },
   },
   {
