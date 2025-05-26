@@ -1,5 +1,6 @@
-import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
+import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput, GetActiveSessionsInput, LogoutDeviceInput, LogoutAllDevicesInput, RefreshTokenInput } from '../services/user.service';
+import { authenticate } from '../middleware/auth.middleware';
 
 interface RegisterRequest {
   username: string;
@@ -298,19 +299,20 @@ export class UserController {
     callback: sendUnaryData<ActiveSessionsResponse>
   ): Promise<void> {
     try {
-      const { user_id } = call.request;
+      // Authenticate request
+      const auth = authenticate(call);
 
-      // Validate input
-      if (!user_id) {
+      // Validate that the requested user_id matches the authenticated user
+      const { user_id } = call.request;
+      if (user_id !== auth.userId) {
         callback({
-          code: 3, // INVALID_ARGUMENT
-          message: 'User ID is required',
+          code: status.PERMISSION_DENIED,
+          message: 'You can only view your own sessions',
         });
         return;
       }
 
       const input: GetActiveSessionsInput = { userId: user_id };
-
       const result = await this.userService.getActiveSessions(input);
 
       callback(null, {
@@ -324,11 +326,11 @@ export class UserController {
           is_active: session.isActive,
         })) || [],
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in getActiveSessions controller:', error);
       callback({
-        code: 13, // INTERNAL
-        message: 'Internal server error',
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
       });
     }
   }
@@ -338,12 +340,24 @@ export class UserController {
     callback: sendUnaryData<LogoutResponse>
   ): Promise<void> {
     try {
+      // Authenticate request
+      const auth = authenticate(call);
+
       const { user_id, device_id } = call.request;
+
+      // Validate that the requested user_id matches the authenticated user
+      if (user_id !== auth.userId) {
+        callback({
+          code: status.PERMISSION_DENIED,
+          message: 'You can only logout your own devices',
+        });
+        return;
+      }
 
       // Validate input
       if (!user_id || !device_id) {
         callback({
-          code: 3, // INVALID_ARGUMENT
+          code: status.INVALID_ARGUMENT,
           message: 'User ID and device ID are required',
         });
         return;
@@ -360,11 +374,11 @@ export class UserController {
         success: result.success,
         message: result.message,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in logoutDevice controller:', error);
       callback({
-        code: 13, // INTERNAL
-        message: 'Internal server error',
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
       });
     }
   }
@@ -374,12 +388,24 @@ export class UserController {
     callback: sendUnaryData<LogoutResponse>
   ): Promise<void> {
     try {
+      // Authenticate request
+      const auth = authenticate(call);
+
       const { user_id } = call.request;
+
+      // Validate that the requested user_id matches the authenticated user
+      if (user_id !== auth.userId) {
+        callback({
+          code: status.PERMISSION_DENIED,
+          message: 'You can only logout your own devices',
+        });
+        return;
+      }
 
       // Validate input
       if (!user_id) {
         callback({
-          code: 3, // INVALID_ARGUMENT
+          code: status.INVALID_ARGUMENT,
           message: 'User ID is required',
         });
         return;
@@ -394,11 +420,11 @@ export class UserController {
         message: result.message,
         logged_out_count: result.loggedOutCount,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in logoutAllDevices controller:', error);
       callback({
-        code: 13, // INTERNAL
-        message: 'Internal server error',
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
       });
     }
   }
