@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/routing/routing_service.dart';
-import '../cubit/splash_cubit.dart';
-import '../cubit/splash_state.dart';
+import '../../../core/device/device_info_cubit.dart';
+import '../cubit/splash/splash_cubit.dart';
+import '../cubit/splash/splash_state.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -12,18 +13,30 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final textTheme = Theme.of(context).textTheme;
-    return BlocProvider(
-      create: (context) {
-        final cubit = SplashCubit();
-        // Start the timer when the cubit is created
-        cubit.startSplashTimer();
-        return cubit;
-      },
+    
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => DeviceInfoCubit()),
+        BlocProvider(
+          create: (context) {
+            final deviceInfoCubit = context.read<DeviceInfoCubit>();
+            final cubit = SplashCubit(deviceInfoCubit: deviceInfoCubit);
+            // Initialize app and get device ID
+            cubit.initializeApp();
+            return cubit;
+          },
+        ),
+      ],
       child: BlocListener<SplashCubit, SplashState>(
         listener: (context, state) {
           state.maybeWhen(
             navigateToNext: () {
               NavigationService().navigateToAndRemoveUntil(RoutingConstants.initialScreen);
+            },
+            error: (message) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
             },
             orElse: () {},
           );
@@ -45,6 +58,15 @@ class SplashScreen extends StatelessWidget {
                     fontSize: size.width * 0.05,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                const SizedBox(height: 20),
+                BlocBuilder<SplashCubit, SplashState>(
+                  builder: (context, state) {
+                    return state.maybeWhen(
+                      loading: () => const CircularProgressIndicator(),
+                      orElse: () => const SizedBox(),
+                    );
+                  },
                 ),
               ],
             ),
