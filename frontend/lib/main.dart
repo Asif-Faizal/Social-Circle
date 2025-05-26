@@ -1,10 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/core/routing/routing_contants.dart';
 import 'package:frontend/core/routing/routing_generator.dart';
 import 'package:frontend/core/routing/routing_service.dart';
+import 'core/notification/data/firebase_options.dart';
 import 'core/theme/app_themes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
