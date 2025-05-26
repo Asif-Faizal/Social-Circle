@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/routing/routing_service.dart';
 
-import '../../../core/di/injection_container.dart';
+import '../../../core/injection/injection_container.dart';
 import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/theme/app_themes.dart';

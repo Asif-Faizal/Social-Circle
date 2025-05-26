@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/routing/routing_service.dart';
-import '../../../core/di/injection_container.dart';
+import '../../../core/injection/injection_container.dart';
 import '../cubit/splash/splash_cubit.dart';
 import '../cubit/splash/splash_state.dart';
 
