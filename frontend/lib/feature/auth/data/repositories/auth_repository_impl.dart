@@ -14,6 +14,8 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result = await remoteDataSource.checkEmail(email);
       return Right(result.toEntity());
+    } on NetworkFailure catch (e) {
+      return Left(e);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

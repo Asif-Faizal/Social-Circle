@@ -247,4 +247,70 @@ as String,
 
 }
 
+/// @nodoc
+
+
+class _NetworkError extends CheckEmailState {
+  const _NetworkError(this.message): super._();
+  
+
+ final  String message;
+
+/// Create a copy of CheckEmailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NetworkErrorCopyWith<_NetworkError> get copyWith => __$NetworkErrorCopyWithImpl<_NetworkError>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkError&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'CheckEmailState.networkError(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NetworkErrorCopyWith<$Res> implements $CheckEmailStateCopyWith<$Res> {
+  factory _$NetworkErrorCopyWith(_NetworkError value, $Res Function(_NetworkError) _then) = __$NetworkErrorCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$NetworkErrorCopyWithImpl<$Res>
+    implements _$NetworkErrorCopyWith<$Res> {
+  __$NetworkErrorCopyWithImpl(this._self, this._then);
+
+  final _NetworkError _self;
+  final $Res Function(_NetworkError) _then;
+
+/// Create a copy of CheckEmailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_NetworkError(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 // dart format on

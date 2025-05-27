@@ -57,6 +57,35 @@ class InitialScreen extends StatelessWidget {
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
           },
+          networkError: (message) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.wifi_off, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(message)),
+                  ],
+                ),
+                backgroundColor: Colors.orange,
+                action: SnackBarAction(
+                  label: 'Retry',
+                  textColor: Colors.white,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      context.read<CheckEmailBloc>().add(
+                        CheckEmailEvent.checkEmail(
+                          emailController.text.trim(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+            );
+          },
           orElse: () {},
         );
       },

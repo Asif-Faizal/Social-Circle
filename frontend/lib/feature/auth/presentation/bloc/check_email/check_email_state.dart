@@ -9,6 +9,7 @@ class CheckEmailState with _$CheckEmailState {
   const factory CheckEmailState.loading() = _Loading;
   const factory CheckEmailState.success(CheckEmailEntity data) = _Success;
   const factory CheckEmailState.error(String message) = _Error;
+  const factory CheckEmailState.networkError(String message) = _NetworkError;
 
   const CheckEmailState._();
 
@@ -17,6 +18,7 @@ class CheckEmailState with _$CheckEmailState {
     T Function()? loading,
     T Function(CheckEmailEntity data)? success,
     T Function(String message)? error,
+    T Function(String message)? networkError,
     required T Function() orElse,
   }) {
     final v = this;
@@ -24,6 +26,7 @@ class CheckEmailState with _$CheckEmailState {
     if (v is _Loading && loading != null) return loading();
     if (v is _Success && success != null) return success((v).data);
     if (v is _Error && error != null) return error((v).message);
+    if (v is _NetworkError && networkError != null) return networkError((v).message);
     return orElse();
   }
 } 
