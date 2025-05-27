@@ -5,35 +5,132 @@ package user;
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc SendOTP (SendOTPRequest) returns (SendOTPResponse);
+  rpc VerifyOTP (VerifyOTPRequest) returns (VerifyOTPResponse);
+  rpc GetActiveSessions (GetActiveSessionsRequest) returns (GetActiveSessionsResponse);
+  rpc LogoutDevice (LogoutDeviceRequest) returns (LogoutDeviceResponse);
+  rpc LogoutAllDevices (LogoutAllDevicesRequest) returns (LogoutAllDevicesResponse);
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc CheckEmail (CheckEmailRequest) returns (CheckEmailResponse);
 }
 
 message RegisterRequest {
   string username = 1;
   string email = 2;
   string password = 3;
+  string device_id = 4;
+  string device_os = 5;
 }
 
 message RegisterResponse {
   bool success = 1;
   string message = 2;
-  string token = 3;
-  User user = 4;
+  string access_token = 3;
+  string refresh_token = 4;
+  User user = 5;
 }
 
 message LoginRequest {
   string email = 1;
   string password = 2;
+  string device_id = 3;
+  string device_os = 4;
 }
 
 message LoginResponse {
   bool success = 1;
   string message = 2;
-  string token = 3;
-  User user = 4;
+  string access_token = 3;
+  string refresh_token = 4;
+  User user = 5;
+}
+
+message SendOTPRequest {
+  string email = 1;
+  string device_id = 2;
+  string device_os = 3;
+}
+
+message SendOTPResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message VerifyOTPRequest {
+  string email = 1;
+  string otp = 2;
+  string device_id = 3;
+  string device_os = 4;
+}
+
+message VerifyOTPResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetActiveSessionsRequest {
+  string user_id = 1;
+}
+
+message GetActiveSessionsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated DeviceSession sessions = 3;
+}
+
+message LogoutDeviceRequest {
+  string user_id = 1;
+  string device_id = 2;
+}
+
+message LogoutDeviceResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message LogoutAllDevicesRequest {
+  string user_id = 1;
+}
+
+message LogoutAllDevicesResponse {
+  bool success = 1;
+  string message = 2;
+  int32 logged_out_count = 3;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+  string device_id = 2;
+  string device_os = 3;
+}
+
+message RefreshTokenResponse {
+  bool success = 1;
+  string message = 2;
+  string access_token = 3;
+  string refresh_token = 4;
 }
 
 message User {
   string id = 1;
   string username = 2;
   string email = 3;
+}
+
+message DeviceSession {
+  string id = 1;
+  string device_id = 2;
+  string device_os = 3;
+  string last_activity = 4;
+  bool is_active = 5;
+}
+
+message CheckEmailRequest {
+  string email = 1;
+}
+
+message CheckEmailResponse {
+  bool success = 1;
+  string message = 2;
+  bool is_registered = 3;
 } 

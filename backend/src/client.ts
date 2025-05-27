@@ -39,7 +39,7 @@ function registerUser(username: string, email: string, password: string) {
   client.register(userData, (error: any, response: any) => {
     if (error) {
       console.error('Error:', error);
-      rl.close();
+      showMenu();
       return;
     }
 
@@ -66,7 +66,7 @@ function loginUser(email: string, password: string) {
   client.login(userData, (error: any, response: any) => {
     if (error) {
       console.error('Error:', error);
-      rl.close();
+      showMenu();
       return;
     }
 
@@ -84,11 +84,63 @@ function loginUser(email: string, password: string) {
   });
 }
 
+// Function to send OTP
+function sendOTP(email: string) {
+  const data = { email };
+  
+  console.log(`Sending OTP to: ${email}`);
+  
+  client.sendOTP(data, (error: any, response: any) => {
+    if (error) {
+      console.error('Error:', error);
+      showMenu();
+      return;
+    }
+
+    console.log('Response:', response);
+    
+    if (response.success) {
+      console.log('OTP sent successfully');
+      promptVerifyOTP(email);
+    } else {
+      console.log('Failed to send OTP:', response.message);
+      showMenu();
+    }
+  });
+}
+
+// Function to verify OTP
+function verifyOTP(email: string, otp: string) {
+  const data = { email, otp };
+  
+  console.log(`Verifying OTP for: ${email}`);
+  
+  client.verifyOTP(data, (error: any, response: any) => {
+    if (error) {
+      console.error('Error:', error);
+      showMenu();
+      return;
+    }
+
+    console.log('Response:', response);
+    
+    if (response.success) {
+      console.log('OTP verified successfully');
+    } else {
+      console.log('OTP verification failed:', response.message);
+    }
+    
+    showMenu();
+  });
+}
+
 // Main menu
 function showMenu() {
   console.log('\n--- gRPC Client Menu ---');
   console.log('1. Register a new user');
   console.log('2. Login to existing account');
+  console.log('3. Send OTP email');
+  console.log('4. Verify OTP');
   console.log('0. Exit');
   
   rl.question('Select an option: ', (option) => {
@@ -98,6 +150,12 @@ function showMenu() {
         break;
       case '2':
         promptLoginUser();
+        break;
+      case '3':
+        promptSendOTP();
+        break;
+      case '4':
+        promptVerifyOTPWithEmail();
         break;
       case '0':
         console.log('Exiting...');
@@ -128,6 +186,27 @@ function promptLoginUser() {
     rl.question('Enter password: ', (password) => {
       loginUser(email, password);
     });
+  });
+}
+
+// Prompt for sending OTP
+function promptSendOTP() {
+  rl.question('Enter email: ', (email) => {
+    sendOTP(email);
+  });
+}
+
+// Prompt for verifying OTP with email
+function promptVerifyOTPWithEmail() {
+  rl.question('Enter email: ', (email) => {
+    promptVerifyOTP(email);
+  });
+}
+
+// Prompt for verifying OTP
+function promptVerifyOTP(email: string) {
+  rl.question('Enter OTP received in email: ', (otp) => {
+    verifyOTP(email, otp);
   });
 }
 
