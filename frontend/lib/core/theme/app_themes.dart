@@ -72,6 +72,26 @@ class AppThemes {
       textColor: textDarkColor,
     ),
     
+    // FloatingActionButton theme
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      extendedPadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      extendedTextStyle: const TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 16.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      extendedIconLabelSpacing: 12.0,
+      enableFeedback: true,
+      splashColor: Colors.white.withValues(alpha: 0.3),
+    ),
+    
     // Elevated Button theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

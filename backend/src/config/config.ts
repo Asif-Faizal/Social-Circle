@@ -15,7 +15,7 @@ if (fs.existsSync(envPath)) {
 
 export default {
   // MongoDB connection string
-  mongodbUrl: process.env.MONGODB_URL || 'mongodb+srv://socialcirclemessaging:WIYTxZ2IluAl0bEW@production.icyn4aj.mongodb.net/?retryWrites=true&w=majority&appName=Production',
+  mongodbUrl: process.env.MONGODB_URL || 'mongodb://localhost:27017/socialcircle',
   
   // JWT settings
   jwt: {

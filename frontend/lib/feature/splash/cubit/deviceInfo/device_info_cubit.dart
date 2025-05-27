@@ -12,6 +12,17 @@ class DeviceInfoCubit extends Cubit<DeviceInfoState> {
     : _storageHelper = storageHelper,
       super(const DeviceInfoState.initial());
 
+  String _formatPlatformName(String platformName) {
+    switch (platformName.toLowerCase()) {
+      case 'ios':
+        return 'iOS';
+      case 'android':
+        return 'Android';
+      default:
+        return platformName;
+    }
+  }
+
   Future<void> getDeviceInfo() async {
     try {
       emit(const DeviceInfoState.loading());
@@ -25,7 +36,7 @@ class DeviceInfoCubit extends Cubit<DeviceInfoState> {
 
       final deviceId = result['deviceId']?.toString() ?? '';
       final osVersion = result['osVersion']?.toString() ?? '';
-      final platformName = result['platform']?.toString() ?? '';
+      final platformName = _formatPlatformName(result['platform']?.toString() ?? '');
 
       await _storageHelper.setDeviceInfo(
         deviceId: deviceId,
