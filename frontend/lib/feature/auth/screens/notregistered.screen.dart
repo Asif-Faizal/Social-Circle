@@ -14,7 +14,9 @@ class NotRegisteredScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.05,vertical: size.height * 0.05),
         child: Column(
