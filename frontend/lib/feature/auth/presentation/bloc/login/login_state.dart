@@ -1,22 +1,22 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/entities/check_email.entity.dart';
+import '../../../domain/entities/login.entity.dart';
 
-part 'check_email_state.freezed.dart';
+part 'login_state.freezed.dart';
 
 @freezed
-class CheckEmailState with _$CheckEmailState {
-  const factory CheckEmailState.initial() = _Initial;
-  const factory CheckEmailState.loading() = _Loading;
-  const factory CheckEmailState.success(CheckEmailEntity data) = _Success;
-  const factory CheckEmailState.error(String message) = _Error;
-  const factory CheckEmailState.networkError(String message) = _NetworkError;
+class LoginState with _$LoginState {
+  const factory LoginState.initial() = _Initial;
+  const factory LoginState.loading() = _Loading;
+  const factory LoginState.success(LoginEntity data) = _Success;
+  const factory LoginState.error(String message) = _Error;
+  const factory LoginState.networkError(String message) = _NetworkError;
 
-  const CheckEmailState._();
+  const LoginState._();
 
   T maybeWhen<T>({
     T Function()? initial,
     T Function()? loading,
-    T Function(CheckEmailEntity data)? success,
+    T Function(LoginEntity data)? success,
     T Function(String message)? error,
     T Function(String message)? networkError,
     required T Function() orElse,

@@ -7,6 +7,8 @@ import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_
 
 import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_contants.dart';
+import '../../../core/widgets/error.snackbar.dart';
+import '../../../core/widgets/network.snackbar.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
@@ -17,17 +19,17 @@ class InitialScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final emailController = TextEditingController();
     final formKey = GlobalKey<FormState>();
-    
+
     String? validateEmail(String? value) {
       if (value == null || value.isEmpty) {
         return 'Please enter your email';
       }
-      
+
       final emailRegExp = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
       if (!emailRegExp.hasMatch(value)) {
         return 'Please enter a valid email';
       }
-      
+
       return null;
     }
 
@@ -53,9 +55,18 @@ class InitialScreen extends StatelessWidget {
             }
           },
           error: (message) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
-            );
+            showErrorSnackBar(context, message);
+          },
+          networkError: (message) {
+            showNetworkSnackBar(context, message, () {
+              if (formKey.currentState!.validate()) {
+                context.read<CheckEmailBloc>().add(
+                  CheckEmailEvent.checkEmail(
+                    emailController.text.trim(),
+                  ),
+                );
+              }
+            });
           },
           orElse: () {},
         );
@@ -73,7 +84,10 @@ class InitialScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Welcome to Social Circle', style: textTheme.displayLarge),
-                Text('Enter your email to continue', style: textTheme.bodyLarge),
+                Text(
+                  'Enter your email to continue',
+                  style: textTheme.bodyLarge,
+                ),
                 SizedBox(height: size.height * 0.02),
                 TextFormField(
                   controller: emailController,
@@ -86,41 +100,45 @@ class InitialScreen extends StatelessWidget {
                   autocorrect: false,
                   validator: validateEmail,
                 ),
-                BlocBuilder<CheckEmailBloc, CheckEmailState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      orElse: () => const SizedBox.shrink(),
-                    );
-                  },
-                ),
               ],
             ),
           ),
         ),
-        floatingActionButton: BlocBuilder<CheckEmailBloc, CheckEmailState>(
+                floatingActionButton: BlocBuilder<CheckEmailBloc, CheckEmailState>(
           builder: (context, state) {
             return FloatingActionButton.extended(
               onPressed: state.maybeWhen(
                 loading: () => null,
-                orElse: () => () {
-                  if (formKey.currentState!.validate()) {
-                    context.read<CheckEmailBloc>().add(
+                orElse:
+                    () => () {
+                      if (formKey.currentState!.validate()) {
+                        context.read<CheckEmailBloc>().add(
                           CheckEmailEvent.checkEmail(
                             emailController.text.trim(),
                           ),
                         );
-                  }
-                },
+                      }
+                    },
               ),
-              label: Row(
-                children: const [
-                  Text('Continue'),
-                  SizedBox(width: 10),
-                  Icon(Icons.arrow_forward),
-                ],
+              label: BlocBuilder<CheckEmailBloc, CheckEmailState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    loading: () => SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                    orElse: () => Row(
+                      children: const [
+                        Text('Continue'),
+                        SizedBox(width: 10),
+                        Icon(Icons.arrow_forward),
+                      ],
+                    ),
+                  );
+                },
               ),
             );
           },

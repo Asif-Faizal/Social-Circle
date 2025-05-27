@@ -19,4 +19,4 @@ class NetworkFailure extends Failure {
 
 class ValidationFailure extends Failure {
   const ValidationFailure(String message) : super(message);
-} 
+}

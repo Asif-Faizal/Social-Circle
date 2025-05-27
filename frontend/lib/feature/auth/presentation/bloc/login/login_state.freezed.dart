@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'check_email_state.dart';
+part of 'login_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,7 +13,7 @@ part of 'check_email_state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$CheckEmailState {
+mixin _$LoginState {
 
 
 
@@ -21,7 +21,7 @@ mixin _$CheckEmailState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CheckEmailState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginState);
 }
 
 
@@ -30,22 +30,22 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CheckEmailState()';
+  return 'LoginState()';
 }
 
 
 }
 
 /// @nodoc
-class $CheckEmailStateCopyWith<$Res>  {
-$CheckEmailStateCopyWith(CheckEmailState _, $Res Function(CheckEmailState) __);
+class $LoginStateCopyWith<$Res>  {
+$LoginStateCopyWith(LoginState _, $Res Function(LoginState) __);
 }
 
 
 /// @nodoc
 
 
-class _Initial extends CheckEmailState {
+class _Initial extends LoginState {
   const _Initial(): super._();
   
 
@@ -65,7 +65,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CheckEmailState.initial()';
+  return 'LoginState.initial()';
 }
 
 
@@ -77,7 +77,7 @@ String toString() {
 /// @nodoc
 
 
-class _Loading extends CheckEmailState {
+class _Loading extends LoginState {
   const _Loading(): super._();
   
 
@@ -97,7 +97,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CheckEmailState.loading()';
+  return 'LoginState.loading()';
 }
 
 
@@ -109,13 +109,13 @@ String toString() {
 /// @nodoc
 
 
-class _Success extends CheckEmailState {
+class _Success extends LoginState {
   const _Success(this.data): super._();
   
 
- final  CheckEmailEntity data;
+ final  LoginEntity data;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -134,22 +134,22 @@ int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
-  return 'CheckEmailState.success(data: $data)';
+  return 'LoginState.success(data: $data)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SuccessCopyWith<$Res> implements $CheckEmailStateCopyWith<$Res> {
+abstract mixin class _$SuccessCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
   factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
 @useResult
 $Res call({
- CheckEmailEntity data
+ LoginEntity data
 });
 
 
-$CheckEmailEntityCopyWith<$Res> get data;
+$LoginEntityCopyWith<$Res> get data;
 
 }
 /// @nodoc
@@ -160,22 +160,22 @@ class __$SuccessCopyWithImpl<$Res>
   final _Success _self;
   final $Res Function(_Success) _then;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
   return _then(_Success(
 null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as CheckEmailEntity,
+as LoginEntity,
   ));
 }
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$CheckEmailEntityCopyWith<$Res> get data {
+$LoginEntityCopyWith<$Res> get data {
   
-  return $CheckEmailEntityCopyWith<$Res>(_self.data, (value) {
+  return $LoginEntityCopyWith<$Res>(_self.data, (value) {
     return _then(_self.copyWith(data: value));
   });
 }
@@ -184,13 +184,13 @@ $CheckEmailEntityCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _Error extends CheckEmailState {
+class _Error extends LoginState {
   const _Error(this.message): super._();
   
 
  final  String message;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -209,14 +209,14 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'CheckEmailState.error(message: $message)';
+  return 'LoginState.error(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ErrorCopyWith<$Res> implements $CheckEmailStateCopyWith<$Res> {
+abstract mixin class _$ErrorCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
@@ -235,7 +235,7 @@ class __$ErrorCopyWithImpl<$Res>
   final _Error _self;
   final $Res Function(_Error) _then;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_Error(
@@ -250,13 +250,13 @@ as String,
 /// @nodoc
 
 
-class _NetworkError extends CheckEmailState {
+class _NetworkError extends LoginState {
   const _NetworkError(this.message): super._();
   
 
  final  String message;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -275,14 +275,14 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'CheckEmailState.networkError(message: $message)';
+  return 'LoginState.networkError(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$NetworkErrorCopyWith<$Res> implements $CheckEmailStateCopyWith<$Res> {
+abstract mixin class _$NetworkErrorCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
   factory _$NetworkErrorCopyWith(_NetworkError value, $Res Function(_NetworkError) _then) = __$NetworkErrorCopyWithImpl;
 @useResult
 $Res call({
@@ -301,7 +301,7 @@ class __$NetworkErrorCopyWithImpl<$Res>
   final _NetworkError _self;
   final $Res Function(_NetworkError) _then;
 
-/// Create a copy of CheckEmailState
+/// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_NetworkError(

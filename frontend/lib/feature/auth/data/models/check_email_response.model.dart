@@ -9,7 +9,6 @@ abstract class CheckEmailResponseModel with _$CheckEmailResponseModel {
   const factory CheckEmailResponseModel({
     required bool success,
     required String message,
-    // ignore: invalid_annotation_target
     @JsonKey(name: 'is_registered') required bool isRegistered,
   }) = _CheckEmailResponseModel;
 

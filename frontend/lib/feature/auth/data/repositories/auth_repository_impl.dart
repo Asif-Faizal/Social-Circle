@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/check_email.entity.dart';
+import '../../domain/entities/login.entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
+import '../models/login_request.model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -14,6 +16,31 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result = await remoteDataSource.checkEmail(email);
       return Right(result.toEntity());
+    } on NetworkFailure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, LoginEntity>> login({
+    required String email,
+    required String password,
+    required String deviceId,
+    required String deviceOs,
+  }) async {
+    try {
+      final request = LoginRequestModel(
+        email: email,
+        password: password,
+        deviceId: deviceId,
+        deviceOs: deviceOs,
+      );
+      final result = await remoteDataSource.login(request);
+      return Right(result.toEntity());
+    } on NetworkFailure catch (e) {
+      return Left(e);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

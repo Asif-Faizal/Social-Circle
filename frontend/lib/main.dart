@@ -5,6 +5,7 @@ import 'package:frontend/core/routing/routing_contants.dart';
 import 'package:frontend/core/routing/routing_generator.dart';
 import 'package:frontend/core/routing/routing_service.dart';
 import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_bloc.dart';
+import 'package:frontend/feature/auth/presentation/bloc/login/login_bloc.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'core/injection/injection_container.dart';
 import 'core/notification/data/firebase_options.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<CheckEmailBloc>(
           create: (_) => sl<CheckEmailBloc>(),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (_) => sl<LoginBloc>(),
         ),
       ],
       child: MaterialApp(

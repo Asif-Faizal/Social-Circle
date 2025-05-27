@@ -4,4 +4,5 @@ class RoutingConstants {
   static const String notRegisteredScreen = '/not-registered';
   static const String enterOtpScreen = '/enter-otp';
   static const String enterPasswordScreen = '/enter-password';
+  static const String homeScreen = '/home';
 }
