@@ -2,6 +2,17 @@ import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 import { UserService, RegisterUserInput, LoginUserInput, SendOTPInput, VerifyOTPInput, GetActiveSessionsInput, LogoutDeviceInput, LogoutAllDevicesInput, RefreshTokenInput } from '../services/user.service';
 import { authenticate } from '../middleware/auth.middleware';
 
+// Response interfaces
+interface CheckEmailResponse {
+  success: boolean;
+  message: string;
+  is_registered: boolean;
+}
+
+interface CheckEmailRequest {
+  email: string;
+}
+
 interface RegisterRequest {
   username: string;
   email: string;
@@ -474,6 +485,54 @@ export class UserController {
       callback({
         code: 13, // INTERNAL
         message: 'Internal server error',
+      });
+    }
+  }
+
+  async checkEmail(
+    call: ServerUnaryCall<CheckEmailRequest, CheckEmailResponse>,
+    callback: sendUnaryData<CheckEmailResponse>
+  ): Promise<void> {
+    try {
+      const { email } = call.request;
+
+      // Validate input
+      if (!email) {
+        callback({
+          code: status.INVALID_ARGUMENT,
+          message: 'Email is required',
+        });
+        return;
+      }
+
+      const input = { email };
+      const result = await this.userService.checkEmail(input);
+
+      console.log('Service result:', result);
+
+      // Create response object with explicit typing
+      const response: CheckEmailResponse = {
+        success: result.success,
+        message: result.message,
+        is_registered: result.isRegistered
+      };
+
+      // Force all fields to be present
+      Object.defineProperty(response, 'is_registered', {
+        enumerable: true,
+        value: result.isRegistered
+      });
+
+      console.log('Sending response:', response);
+      console.log('Response keys:', Object.keys(response));
+
+      // Send the response
+      callback(null, response);
+    } catch (error: any) {
+      console.error('Error in checkEmail controller:', error);
+      callback({
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
       });
     }
   }

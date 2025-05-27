@@ -22,6 +22,12 @@ const UserSchema: Schema = new Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      validate: {
+        validator: function(v: string) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        },
+        message: (props: { value: string }) => `${props.value} is not a valid email!`
+      }
     },
     password: {
       type: String,
@@ -34,19 +40,24 @@ const UserSchema: Schema = new Schema(
   }
 );
 
-// Hash password before saving
+// Pre-save middleware to handle email case and password hashing
 UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
+  // Convert email to lowercase before saving
+  if (this.isModified('email')) {
+    this.email = this.email.toLowerCase();
   }
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error: any) {
-    next(error);
+
+  // Hash password if modified
+  if (this.isModified('password')) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (error: any) {
+      return next(error);
+    }
   }
+
+  next();
 });
 
 // Compare password method

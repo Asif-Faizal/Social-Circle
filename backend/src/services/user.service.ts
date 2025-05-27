@@ -87,6 +87,16 @@ export interface LogoutOutput {
   loggedOutCount?: number;
 }
 
+export interface CheckEmailInput {
+  email: string;
+}
+
+export interface CheckEmailOutput {
+  success: boolean;
+  message: string;
+  isRegistered: boolean;
+}
+
 export class UserService {
   private deviceSessionService: DeviceSessionService;
 
@@ -433,6 +443,43 @@ export class UserService {
       return {
         success: false,
         message: 'Error logging out all devices',
+      };
+    }
+  }
+
+  async checkEmail(input: CheckEmailInput): Promise<CheckEmailOutput> {
+    try {
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(input.email)) {
+        return {
+          success: false,
+          message: 'Invalid email format',
+          isRegistered: false
+        };
+      }
+
+      // Convert email to lowercase for case-insensitive comparison
+      const normalizedEmail = input.email.toLowerCase();
+
+      // Check if user exists with this email
+      const existingUser = await User.findOne({ 
+        email: normalizedEmail 
+      }).exec();
+
+      const isRegistered = !!existingUser;
+      
+      return {
+        success: true,
+        message: isRegistered ? 'Email is already registered' : 'Email is available',
+        isRegistered: isRegistered
+      };
+    } catch (error) {
+      console.error('Error checking email:', error);
+      return {
+        success: false,
+        message: 'Error checking email',
+        isRegistered: false
       };
     }
   }

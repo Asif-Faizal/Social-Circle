@@ -16,6 +16,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   enums: String,
   defaults: true,
   oneofs: true,
+  json: true // Add JSON support
 });
 
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
@@ -45,7 +46,8 @@ async function startServer() {
       GetActiveSessions: userRoutes.getActiveSessions,
       LogoutDevice: userRoutes.logoutDevice,
       LogoutAllDevices: userRoutes.logoutAllDevices,
-      RefreshToken: userRoutes.refreshToken
+      RefreshToken: userRoutes.refreshToken,
+      CheckEmail: userRoutes.checkEmail
     });
 
     // Add reflection service

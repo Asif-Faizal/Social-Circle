@@ -21,6 +21,7 @@ export default {
   jwt: {
     secret: process.env.JWT_SECRET || 'default-secret-key',
     expiresIn: process.env.TOKEN_EXPIRATION || '1h',
+    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRATION || '7d',
   },
   
   // Server settings

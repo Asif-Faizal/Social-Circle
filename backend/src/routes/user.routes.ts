@@ -1,4 +1,4 @@
-import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
+import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 import { UserController } from '../controllers/user.controller';
 
 interface RegisterRequest {
@@ -90,6 +90,16 @@ interface RefreshTokenResponse {
   refresh_token: string;
 }
 
+interface CheckEmailRequest {
+  email: string;
+}
+
+interface CheckEmailResponse {
+  success: boolean;
+  message: string;
+  is_registered: boolean;
+}
+
 // Initialize controller
 const userController = new UserController();
 
@@ -157,5 +167,22 @@ export const userRoutes = {
     callback: sendUnaryData<RefreshTokenResponse>
   ): Promise<void> => {
     await userController.refreshToken(call, callback);
+  },
+
+  // Check email handler
+  checkEmail: async (
+    call: ServerUnaryCall<CheckEmailRequest, CheckEmailResponse>,
+    callback: sendUnaryData<CheckEmailResponse>
+  ): Promise<void> => {
+    try {
+      await userController.checkEmail(call, callback);
+    } catch (error) {
+      console.error('Error in checkEmail route:', error);
+      callback({
+        code: status.INTERNAL,
+        message: 'Internal server error',
+        details: 'Error processing checkEmail request'
+      });
+    }
   }
 }; 

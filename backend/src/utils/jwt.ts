@@ -44,7 +44,7 @@ export const generateRefreshToken = (user: IUser): string => {
   // @ts-ignore: Type issues with jsonwebtoken types
   return jwt.sign(payload, secret, {
     algorithm: 'HS256',
-    expiresIn: '7d'
+    expiresIn: config.jwt.refreshTokenExpiresIn
   });
 };
 
