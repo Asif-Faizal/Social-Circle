@@ -22,6 +22,7 @@ class ChatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: (){},
         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
         title: Row(
           children: [

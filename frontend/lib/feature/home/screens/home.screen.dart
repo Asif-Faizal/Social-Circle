@@ -7,11 +7,11 @@ import '../widgets/online.chat.card.dart';
 class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // Calculate progress for transitions
-    final progress = (shrinkOffset / (maxExtent - minExtent)).clamp(0.0, 1.0);
-    
-    // Calculate height based on scroll progress and ensure it's clamped
-    final height = (maxExtent - (progress * (maxExtent - minExtent))).clamp(minExtent, maxExtent);
+    // Calculate the current height ensuring it stays within the allowed range.
+    // Using a direct linear relation between shrinkOffset and height prevents
+    // tiny floating-point rounding errors that can make layoutExtent slightly
+    // larger than paintExtent (see Flutter issue #111906).
+    final height = (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
     
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -32,7 +32,7 @@ class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 180.0;
+  double get maxExtent => 160.0;
 
   @override
   double get minExtent => 50.0;
