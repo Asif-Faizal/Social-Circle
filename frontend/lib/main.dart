@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/routing/routing_contants.dart';
 import 'package:frontend/core/routing/routing_generator.dart';
 import 'package:frontend/core/routing/routing_service.dart';
+import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_bloc.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'core/injection/injection_container.dart';
 import 'core/notification/data/firebase_options.dart';
@@ -27,13 +29,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Social Circle',
-      debugShowCheckedModeBanner: false,
-      theme: AppThemes.lightTheme,
-      navigatorKey: NavigationService().navigatorKey,
-      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings, context),
-      initialRoute: RoutingConstants.splashScreen,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CheckEmailBloc>(
+          create: (_) => sl<CheckEmailBloc>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Social Circle',
+        debugShowCheckedModeBanner: false,
+        theme: AppThemes.lightTheme,
+        navigatorKey: NavigationService().navigatorKey,
+        onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings, context),
+        initialRoute: RoutingConstants.splashScreen,
+      ),
     );
   }
 }
