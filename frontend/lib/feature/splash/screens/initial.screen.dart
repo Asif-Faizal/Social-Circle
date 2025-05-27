@@ -7,6 +7,8 @@ import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_
 
 import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_contants.dart';
+import '../../../core/widgets/error.snackbar.dart';
+import '../../../core/widgets/network.snackbar.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
@@ -53,38 +55,18 @@ class InitialScreen extends StatelessWidget {
             }
           },
           error: (message) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+            showErrorSnackBar(context, message);
           },
           networkError: (message) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    const Icon(Icons.wifi_off, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(message)),
-                  ],
-                ),
-                backgroundColor: Colors.orange,
-                action: SnackBarAction(
-                  label: 'Retry',
-                  textColor: Colors.white,
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      context.read<CheckEmailBloc>().add(
-                        CheckEmailEvent.checkEmail(
-                          emailController.text.trim(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ),
-            );
+            showNetworkSnackBar(context, message, () {
+              if (formKey.currentState!.validate()) {
+                context.read<CheckEmailBloc>().add(
+                  CheckEmailEvent.checkEmail(
+                    emailController.text.trim(),
+                  ),
+                );
+              }
+            });
           },
           orElse: () {},
         );

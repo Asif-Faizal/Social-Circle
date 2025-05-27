@@ -6,7 +6,9 @@ import '../../feature/auth/data/datasources/auth_remote_data_source.dart';
 import '../../feature/auth/data/repositories/auth_repository_impl.dart';
 import '../../feature/auth/domain/repositories/auth_repository.dart';
 import '../../feature/auth/domain/usecases/check_email.usecase.dart';
+import '../../feature/auth/domain/usecases/login.usecase.dart';
 import '../../feature/auth/presentation/bloc/check_email/check_email_bloc.dart';
+import '../../feature/auth/presentation/bloc/login/login_bloc.dart';
 import '../../feature/splash/cubit/deviceInfo/device_info_cubit.dart';
 import '../../feature/splash/cubit/splash/splash_cubit.dart';
 import '../storage/storage_helper.dart';
@@ -46,8 +48,7 @@ class DependencyInjection {
     sl.registerFactory<SplashCubit>(() => SplashCubit(deviceInfoCubit: sl()));
     sl.registerFactory<OtpCubit>(() => OtpCubit());
 
-    // Auth Feature
-    // Data Sources
+    // Auth
     sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(
         channel: sl(),
@@ -58,6 +59,8 @@ class DependencyInjection {
       () => AuthRepositoryImpl(remoteDataSource: sl()),
     );
     sl.registerLazySingleton(() => CheckEmailUseCase(sl()));
+    sl.registerLazySingleton(() => LoginUseCase(sl()));
     sl.registerFactory(() => CheckEmailBloc(checkEmailUseCase: sl()));
+    sl.registerFactory(() => LoginBloc(loginUseCase: sl(), storageHelper: sl()));
   }
 }
