@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/routing/routing_service.dart';
 import '../../../core/injection/injection_container.dart';
+import '../../../core/storage/storage_helper.dart';
+import '../../../core/widgets/error.snackbar.dart';
 import '../cubit/splash/splash_cubit.dart';
 import '../cubit/splash/splash_state.dart';
 
@@ -24,12 +26,16 @@ class SplashScreen extends StatelessWidget {
         listener: (context, state) {
           state.maybeWhen(
             navigateToNext: () {
-              NavigationService().navigateToAndRemoveUntil(RoutingConstants.initialScreen);
+              final storageHelper = sl<StorageHelper>();
+              final isLoggedIn = storageHelper.isLoggedIn;
+              if (isLoggedIn) {
+                NavigationService().navigateToAndRemoveUntil(RoutingConstants.homeScreen);
+              } else {
+                NavigationService().navigateToAndRemoveUntil(RoutingConstants.initialScreen);
+              }
             },
             error: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              showErrorSnackBar(context, message);
             },
             orElse: () {},
           );
