@@ -5,6 +5,8 @@ import '../models/login_request.model.dart';
 import '../models/login_response.model.dart';
 import '../models/sent_email_otp_request.model.dart';
 import '../models/sent_email_otp_response.model.dart';
+import '../models/verify_email_otp_request.model.dart';
+import '../models/verify_email_otp_response.model.dart';
 import 'generated/user.pbgrpc.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
@@ -14,6 +16,8 @@ abstract class AuthRemoteDataSource {
   Future<LoginResponseModel> login(LoginRequestModel request);
   Future<SentEmailOtpResponseModel> sentEmailOtp(
       SentEmailOtpRequestModel request);
+  Future<VerifyEmailOtpResponseModel> verifyEmailOtp(
+      VerifyEmailOtpRequestModel request);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -87,7 +91,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           LoginRequest()
             ..email = request.email
             ..password = request.password
-            ..deviceId = "1234567890"
+            ..deviceId = request.deviceId
             ..deviceOs = request.deviceOs;
 
       // Add timeout to gRPC call
@@ -163,6 +167,52 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       print(response);
       return SentEmailOtpResponseModel(
+        success: response.success,
+        message: response.message,
+      );
+    } on NetworkFailure {
+      rethrow;
+    } on GrpcError catch (e) {
+      switch (e.code) {
+        case StatusCode.unavailable:
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
+        case StatusCode.deadlineExceeded:
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
+        default:
+          throw Exception('gRPC Error: ${e.message}');
+      }
+    } catch (e) {
+      if (e is Exception) {
+        throw Exception('Failed to check email: ${e.toString()}');
+      }
+      throw const NetworkFailure('An unexpected network error occurred');
+    }
+  }
+
+  @override
+  Future<VerifyEmailOtpResponseModel> verifyEmailOtp(
+      VerifyEmailOtpRequestModel request) async {
+    try {
+      // Check network connectivity before making the request
+      await networkInfo.checkConnectivity();
+
+      final verifyOtpRequest = VerifyOTPRequest()
+        ..email = request.email
+        ..otp = request.otp
+        ..deviceId = request.deviceId
+        ..deviceOs = request.deviceOs;
+
+      final response = await _client.verifyOTP(
+        verifyOtpRequest,
+        options: CallOptions(timeout: const Duration(seconds: 10)),
+      );
+      print(request.otp);
+      print(response);
+      return VerifyEmailOtpResponseModel(
         success: response.success,
         message: response.message,
       );
