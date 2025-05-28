@@ -8,7 +8,11 @@ import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_contants.dart';
 import '../../../core/theme/app_themes.dart';
 import '../../../core/widgets/error.snackbar.dart';
+import '../../../core/widgets/network.snackbar.dart';
 import '../../../core/widgets/success.snackbar.dart';
+import '../bloc/verify_email_otp/verify_email_otp_bloc.dart';
+import '../bloc/verify_email_otp/verify_email_otp_event.dart';
+import '../bloc/verify_email_otp/verify_email_otp_state.dart';
 import '../cubit/otp_cubit.dart';
 import '../cubit/otp_state.dart';
 
@@ -22,131 +26,209 @@ class EnterOtpScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     // Create a form key to manage the form state
     final formKey = GlobalKey<FormState>();
-    
+
     // Create OTP controllers and focus nodes
     return _OtpInputWidget(
-      builder: (controllers, focusNodes) => BlocProvider(
-        create: (context) => sl<OtpCubit>(),
-        child: Builder(
-          builder: (context) {
-            return BlocConsumer<OtpCubit, OtpState>(
-              listener: (context, state) {
-                state.maybeWhen(
-                  otpValidationSuccess: () {
-                    NavigationService().navigateToReplace(RoutingConstants.enterPasswordScreen, arguments: PasswordArguments(email: args.email, isRegister: args.isRegister));
+      builder:
+          (controllers, focusNodes) => BlocProvider(
+            create: (context) => sl<OtpCubit>(),
+            child: Builder(
+              builder: (context) {
+                return BlocListener<VerifyEmailOtpBloc, VerifyEmailOtpState>(
+                  listener: (context, state) {
+                    state.maybeWhen(
+                      success: (data) {
+                        NavigationService().navigateToReplace(
+                          RoutingConstants.enterPasswordScreen,
+                          arguments: PasswordArguments(
+                            email: args.email,
+                            isRegister: args.isRegister,
+                          ),
+                        );
+                      },
+                      error: (message) {
+                        showErrorSnackBar(context, message);
+                      },
+                      networkError: (message) {
+                        showNetworkSnackBar(context, message, () {
+                          context.read<VerifyEmailOtpBloc>().add(
+                            VerifyEmailOtpEvent(
+                              email: args.email,
+                              otp: controllers.join(''),
+                            ),
+                          );
+                        });
+                      },
+                      orElse: () {},
+                    );
                   },
-                  otpValidationFailure: (message) {
-                    // Show error message
-                    showErrorSnackBar(context, message ?? 'Invalid OTP');
-                  },
-                  orElse: () {},
-                );
-              },
-              builder: (context, state) {
-                return Scaffold(
-                  appBar: AppBar(),
-                  body: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.05, vertical: size.height * 0.05),
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Enter OTP', style: textTheme.displayLarge),
-                          RichText(
-                            text: TextSpan(
-                              style: textTheme.bodyLarge,
+                  child: BlocConsumer<OtpCubit, OtpState>(
+                    listener: (context, state) {
+                      state.maybeWhen(
+                        otpValidationSuccess: () {
+                          context.read<VerifyEmailOtpBloc>().add(
+                            VerifyEmailOtpEvent(
+                              email: args.email,
+                              otp: controllers.map((e) => e.text).join(''),
+                            ),
+                          );
+                        },
+                        otpValidationFailure: (message) {
+                          // Show error message
+                          showErrorSnackBar(context, message ?? 'Invalid OTP');
+                        },
+                        orElse: () {},
+                      );
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                        appBar: AppBar(),
+                        body: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.05,
+                            vertical: size.height * 0.05,
+                          ),
+                          child: Form(
+                            key: formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const TextSpan(text: 'Enter the OTP sent to '),
-                                TextSpan(
-                                  text: args.email,
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                    color: AppThemes.primaryColor,
-                                    decorationThickness: 0.5,
-                                    decorationColor: AppThemes.primaryColor,
+                                Text(
+                                  'Enter OTP',
+                                  style: textTheme.displayLarge,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    style: textTheme.bodyLarge,
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Enter the OTP sent to ',
+                                      ),
+                                      TextSpan(
+                                        text: args.email,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                          color: AppThemes.primaryColor,
+                                          decorationThickness: 0.5,
+                                          decorationColor:
+                                              AppThemes.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: size.height * 0.04),
+
+                                // OTP Fields Row in a Container to maintain fixed height
+                                Container(
+                                  height: 70, // Fixed height container
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: List.generate(
+                                      6,
+                                      (index) => _buildOtpField(
+                                        index,
+                                        context,
+                                        controllers,
+                                        focusNodes,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // Resend OTP button in a fixed height container
+                                Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      // Logic to resend OTP
+                                      showSuccessSnackBar(
+                                        context,
+                                        'OTP resent',
+                                      );
+                                      // Clear existing OTP
+                                      for (var i = 0; i < 6; i++) {
+                                        controllers[i].clear();
+                                      }
+                                      focusNodes[0].requestFocus();
+                                      context.read<OtpCubit>().clearOtp();
+                                    },
+                                    child: const Text('Resend OTP'),
+                                  ),
+                                ),
+
+                                const Spacer(),
+
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Validate form before proceeding
+                                      if (formKey.currentState!.validate()) {
+                                        context.read<OtpCubit>().validateOtp();
+                                      } else {
+                                        // Show message if not all fields are filled
+                                        showErrorSnackBar(
+                                          context,
+                                          'Please enter all OTP digits',
+                                        );
+                                      }
+                                    },
+                                    child: state.maybeWhen(
+                                      loading:
+                                          () => SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child:
+                                                const CircularProgressIndicator(),
+                                          ),
+                                      orElse:
+                                          () => BlocBuilder<
+                                            VerifyEmailOtpBloc,
+                                            VerifyEmailOtpState
+                                          >(
+                                            builder: (context, state) {
+                                              return state.maybeWhen(
+                                                loading:
+                                                    () => SizedBox(
+                                                      width: 20,
+                                                      height: 20,
+                                                      child:
+                                                          const CircularProgressIndicator(),
+                                                    ),
+                                                orElse:
+                                                    () => const Text(
+                                                      'Verify OTP',
+                                                    ),
+                                              );
+                                            },
+                                          ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(height: size.height * 0.04),
-                          
-                          // OTP Fields Row in a Container to maintain fixed height
-                          Container(
-                            height: 70, // Fixed height container
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                6, 
-                                (index) => _buildOtpField(index, context, controllers, focusNodes),
-                              ),
-                            ),
-                          ),
-
-                          // Resend OTP button in a fixed height container
-                          Center(
-                            child: TextButton(
-                              onPressed: () {
-                                // Logic to resend OTP
-                                showSuccessSnackBar(context, 'OTP resent');
-                                // Clear existing OTP
-                                for (var i = 0; i < 6; i++) {
-                                  controllers[i].clear();
-                                }
-                                focusNodes[0].requestFocus();
-                                context.read<OtpCubit>().clearOtp();
-                              },
-                              child: const Text('Resend OTP'),
-                            ),
-                          ),
-
-                          const Spacer(),
-                          
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  // Validate form before proceeding
-                                  if (formKey.currentState!.validate()) {
-                                    context.read<OtpCubit>().validateOtp();
-                                  } else {
-                                    // Show message if not all fields are filled
-                                    showErrorSnackBar(context, 'Please enter all OTP digits');
-                                  }
-                                },
-                                child: state.maybeWhen(
-                                  loading: () => SizedBox(
-                                    width: size.width * 0.05,
-                                    height: size.width * 0.05,
-                                    child: const CircularProgressIndicator(
-                                    ),
-                                  ),
-                                  orElse: () => const Text('Verify OTP'),
-                                ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
-            );
-          },
-        ),
-      ),
+            ),
+          ),
     );
   }
-  
+
   // Build individual OTP text field
   Widget _buildOtpField(
-    int index, 
-    BuildContext context, 
-    List<TextEditingController> controllers, 
-    List<FocusNode> focusNodes
+    int index,
+    BuildContext context,
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
   ) {
     // OTP validator
     String? validateOtpDigit(String? value) {
@@ -155,7 +237,7 @@ class EnterOtpScreen extends StatelessWidget {
       }
       return null; // Valid
     }
-    
+
     return SizedBox(
       width: 40,
       height: 60, // Fixed height for consistency
@@ -169,9 +251,14 @@ class EnterOtpScreen extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           counterText: '',
-          errorStyle: const TextStyle(height: 0), // Hide error text but keep validation
+          errorStyle: const TextStyle(
+            height: 0,
+          ), // Hide error text but keep validation
           isDense: true, // Reduces the internal padding
-          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2), // Control the content padding
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 2,
+          ), // Control the content padding
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(color: AppThemes.primaryColor),
@@ -193,7 +280,7 @@ class EnterOtpScreen extends StatelessWidget {
           if (value.length == 1) {
             // Update cubit with the entered digit
             context.read<OtpCubit>().updateOtpDigit(index, value);
-            
+
             // Move to next field if not the last one
             if (index < 5) {
               FocusScope.of(context).requestFocus(focusNodes[index + 1]);
@@ -202,7 +289,7 @@ class EnterOtpScreen extends StatelessWidget {
               focusNodes[index].unfocus();
             }
           }
-          
+
           // Handle backspace/delete with empty field to go back
           if (value.isEmpty && index > 0) {
             FocusScope.of(context).requestFocus(focusNodes[index - 1]);
@@ -215,10 +302,14 @@ class EnterOtpScreen extends StatelessWidget {
 
 // Helper widget to manage controllers and focus nodes lifecycle
 class _OtpInputWidget extends StatefulWidget {
-  final Widget Function(List<TextEditingController> controllers, List<FocusNode> focusNodes) builder;
-  
+  final Widget Function(
+    List<TextEditingController> controllers,
+    List<FocusNode> focusNodes,
+  )
+  builder;
+
   const _OtpInputWidget({required this.builder});
-  
+
   @override
   State<_OtpInputWidget> createState() => _OtpInputWidgetState();
 }
@@ -226,14 +317,14 @@ class _OtpInputWidget extends StatefulWidget {
 class _OtpInputWidgetState extends State<_OtpInputWidget> {
   late final List<TextEditingController> _controllers;
   late final List<FocusNode> _focusNodes;
-  
+
   @override
   void initState() {
     super.initState();
     _controllers = List.generate(6, (_) => TextEditingController());
     _focusNodes = List.generate(6, (_) => FocusNode());
   }
-  
+
   @override
   void dispose() {
     for (var i = 0; i < 6; i++) {
@@ -242,7 +333,7 @@ class _OtpInputWidgetState extends State<_OtpInputWidget> {
     }
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return widget.builder(_controllers, _focusNodes);

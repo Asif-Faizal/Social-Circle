@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/routing/routing_service.dart';
-import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_bloc.dart';
-import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_event.dart';
-import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_state.dart';
+import 'package:frontend/feature/auth/bloc/check_email/check_email_bloc.dart';
+import 'package:frontend/feature/auth/bloc/check_email/check_email_event.dart';
+import 'package:frontend/feature/auth/bloc/check_email/check_email_state.dart';
 
 import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_contants.dart';

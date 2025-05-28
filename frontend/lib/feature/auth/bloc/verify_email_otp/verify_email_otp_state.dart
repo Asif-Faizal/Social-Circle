@@ -1,22 +1,22 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/entities/check_email.entity.dart';
+import '../../domain/entities/verify_email_otp.entity.dart';
 
-part 'check_email_state.freezed.dart';
+part 'verify_email_otp_state.freezed.dart';
 
 @freezed
-class CheckEmailState with _$CheckEmailState {
-  const factory CheckEmailState.initial() = _Initial;
-  const factory CheckEmailState.loading() = _Loading;
-  const factory CheckEmailState.success(CheckEmailEntity data) = _Success;
-  const factory CheckEmailState.error(String message) = _Error;
-  const factory CheckEmailState.networkError(String message) = _NetworkError;
+class VerifyEmailOtpState with _$VerifyEmailOtpState {
+  const factory VerifyEmailOtpState.initial() = _Initial;
+  const factory VerifyEmailOtpState.loading() = _Loading;
+  const factory VerifyEmailOtpState.success(VerifyEmailOtpEntity data) = _Success;
+  const factory VerifyEmailOtpState.error(String message) = _Error;
+  const factory VerifyEmailOtpState.networkError(String message) = _NetworkError;
 
-  const CheckEmailState._();
+  const VerifyEmailOtpState._();
 
   T maybeWhen<T>({
     T Function()? initial,
     T Function()? loading,
-    T Function(CheckEmailEntity data)? success,
+    T Function(VerifyEmailOtpEntity data)? success,
     T Function(String message)? error,
     T Function(String message)? networkError,
     required T Function() orElse,

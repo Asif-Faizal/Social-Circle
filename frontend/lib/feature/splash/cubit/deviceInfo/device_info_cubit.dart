@@ -38,11 +38,16 @@ class DeviceInfoCubit extends Cubit<DeviceInfoState> {
       final osVersion = result['osVersion']?.toString() ?? '';
       final platformName = _formatPlatformName(result['platform']?.toString() ?? '');
 
-      await _storageHelper.setDeviceInfo(
-        deviceId: deviceId,
-        deviceOs: platformName,
-        deviceOsVersion: osVersion,
-      );
+      try {
+         await _storageHelper.setDeviceInfo(
+           deviceId: deviceId,
+           deviceOs: platformName,
+           deviceOsVersion: osVersion,
+         );
+      } catch (storageError) {
+        emit(DeviceInfoState.error('Failed to store device info: $storageError'));
+        return;
+      }
 
       emit(DeviceInfoState.loaded(
         deviceId: deviceId,
