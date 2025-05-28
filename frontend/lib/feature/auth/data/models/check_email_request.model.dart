@@ -11,4 +11,4 @@ abstract class CheckEmailRequestModel with _$CheckEmailRequestModel {
 
   factory CheckEmailRequestModel.fromJson(Map<String, dynamic> json) =>
       _$CheckEmailRequestModelFromJson(json);
-} 
+}

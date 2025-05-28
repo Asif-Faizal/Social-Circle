@@ -40,7 +40,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             if (!data.success || data.accessToken.isEmpty || data.refreshToken.isEmpty || data.user.id.isEmpty) {
               return LoginState.error(data.message);
             }
-            storageHelper.setAuthData(isLoggedIn: true, accessToken: data.accessToken, refreshToken: data.refreshToken);
+            storageHelper.setAuthData(isLoggedIn: true, accessToken: data.accessToken, refreshToken: data.refreshToken, userId: data.user.id);
             return LoginState.success(data);
           },
         ),

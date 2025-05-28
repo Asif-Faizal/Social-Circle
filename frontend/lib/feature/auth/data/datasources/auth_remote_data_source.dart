@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
@@ -55,7 +57,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               );
             },
           );
-      print(response);
+      log("========================================REQUEST============================================");
+      log(request.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return CheckEmailResponseModel(
         success: response.success,
         message: response.message,
@@ -111,11 +116,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
               );
             },
           );
-      print(request.email);
-      print(request.password);
-      print(request.deviceId);
-      print(request);
-      print(response);
+      log("========================================REQUEST============================================");
+      log(loginRequest.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return LoginResponseModel(
         success: response.success,
         message: response.message,
@@ -168,7 +172,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         sendOtpRequest,
         options: CallOptions(timeout: const Duration(seconds: 10)),
       );
-      print(response);
+      log("========================================REQUEST============================================");
+      log(sendOtpRequest.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return SentEmailOtpResponseModel(
         success: response.success,
         message: response.message,
@@ -213,8 +220,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         verifyOtpRequest,
         options: CallOptions(timeout: const Duration(seconds: 10)),
       );
-      print(request.otp);
-      print(response);
+      log("========================================REQUEST============================================");
+      log(verifyOtpRequest.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return VerifyEmailOtpResponseModel(
         success: response.success,
         message: response.message,
@@ -259,12 +268,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         registerRequest,
         options: CallOptions(timeout: const Duration(seconds: 10)),
       );
-      print(request.name);
-      print(request.email);
-      print(request.password);
-      print(request.deviceId);
-      print(request.deviceOs);
-      print(response);
+      log("========================================REQUEST============================================");
+      log(registerRequest.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return RegisterResponseModel(
         success: response.success,
         message: response.message,
