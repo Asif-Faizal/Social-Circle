@@ -10,6 +10,9 @@ import '../../../core/widgets/network.snackbar.dart';
 import '../bloc/login/login_bloc.dart';
 import '../bloc/login/login_event.dart';
 import '../bloc/login/login_state.dart';
+import '../bloc/register/register_bloc.dart';
+import '../bloc/register/register_event.dart';
+import '../bloc/register/register_state.dart';
 import '../cubit/obscure_password/obscure_password_cubit.dart';
 import '../cubit/obscure_password/obscure_password_state.dart';
 
@@ -42,34 +45,54 @@ class PasswordScreen extends StatelessWidget {
       create: (_) => ObscurePasswordCubit(),
       child: Scaffold(
         appBar: AppBar(),
-        body: BlocListener<LoginBloc, LoginState>(
-          listener: (context, state) {
-            state.maybeWhen(
-              success: (data) {
-                NavigationService().navigateToAndRemoveUntil(RoutingConstants.homeScreen);
-              },
-              error: (message) {
-                showErrorSnackBar(context, message);
-              },
-              networkError: (message) {
-                showNetworkSnackBar(
-                  context,
-                  message,
-                  () {
-                    if (formKey.currentState!.validate()) {
-                      context.read<LoginBloc>().add(
-                            LoginEvent(
-                              email: args.email,
-                              password: passwordController.text,
-                            ),
-                          );
-                    }
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (data) {
+                    NavigationService().navigateToAndRemoveUntil(
+                      RoutingConstants.homeScreen,
+                    );
                   },
+                  error: (message) {
+                    showErrorSnackBar(context, message);
+                  },
+                  networkError: (message) {
+                    showNetworkSnackBar(context, message, () {
+                      if (formKey.currentState!.validate()) {
+                        context.read<LoginBloc>().add(
+                          LoginEvent(
+                            email: args.email,
+                            password: passwordController.text,
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  orElse: () {},
                 );
               },
-              orElse: () {},
-            );
-          },
+            ),
+            BlocListener<RegisterBloc, RegisterState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (data) {
+                    NavigationService().navigateToAndRemoveUntil(
+                      RoutingConstants.homeScreen,
+                    );
+                  },
+                  error: (message) {
+                    showErrorSnackBar(context, message);
+                  },
+                  networkError: (message) {
+                    showNetworkSnackBar(context, message, () {});
+                  },
+                  orElse: () {},
+                );
+              },
+            ),
+          ],
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: size.width * 0.05,
@@ -124,8 +147,11 @@ class PasswordScreen extends StatelessWidget {
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                             ),
-                            onPressed: () =>
-                                context.read<ObscurePasswordCubit>().togglePassword(),
+                            onPressed:
+                                () =>
+                                    context
+                                        .read<ObscurePasswordCubit>()
+                                        .togglePassword(),
                           ),
                         ),
                         keyboardType: TextInputType.text,
@@ -152,8 +178,11 @@ class PasswordScreen extends StatelessWidget {
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                               ),
-                              onPressed: () =>
-                                  context.read<ObscurePasswordCubit>().toggleConfirm(),
+                              onPressed:
+                                  () =>
+                                      context
+                                          .read<ObscurePasswordCubit>()
+                                          .toggleConfirm(),
                             ),
                           ),
                           keyboardType: TextInputType.text,
@@ -178,34 +207,55 @@ class PasswordScreen extends StatelessWidget {
                                 'Passwords do not match',
                               );
                             } else {
-                              // Register
+                              context.read<RegisterBloc>().add(
+                                RegisterEvent(
+                                  email: args.email,
+                                  password: passwordController.text,
+                                ),
+                              );
                             }
                           } else {
                             context.read<LoginBloc>().add(
-                                  LoginEvent(
-                                    email: args.email,
-                                    password: passwordController.text,
-                                  ),
-                                );
+                              LoginEvent(
+                                email: args.email,
+                                password: passwordController.text,
+                              ),
+                            );
                           }
                         }
                       },
-                      child: args.isRegister
-                          ? const Text('Register')
-                          : BlocBuilder<LoginBloc, LoginState>(
-                              builder: (context, state) {
-                                return state.maybeWhen(
-                                  loading: () => const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  orElse: () => const Text('Login'),
-                                );
-                              },
-                            ),
+                      child:
+                          args.isRegister
+                              ? BlocBuilder<RegisterBloc, RegisterState>(
+                                builder: (context, state) {
+                                  return state.maybeWhen(
+                                    loading:
+                                        () => const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                    orElse: () => const Text('Register'),
+                                  );
+                                },
+                              )
+                              : BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  return state.maybeWhen(
+                                    loading:
+                                        () => const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                    orElse: () => const Text('Login'),
+                                  );
+                                },
+                              ),
                     ),
                   ),
                 ],

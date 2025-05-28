@@ -249,6 +249,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await networkInfo.checkConnectivity();
 
       final registerRequest = RegisterRequest()
+        ..username = request.name
         ..email = request.email
         ..password = request.password
         ..deviceId = request.deviceId
@@ -258,6 +259,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         registerRequest,
         options: CallOptions(timeout: const Duration(seconds: 10)),
       );
+      print(request.name);
+      print(request.email);
+      print(request.password);
+      print(request.deviceId);
+      print(request.deviceOs);
       print(response);
       return RegisterResponseModel(
         success: response.success,
