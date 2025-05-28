@@ -26,22 +26,23 @@ class DependencyInjection {
 
     // Network Services
     sl.registerLazySingleton<Connectivity>(() => Connectivity());
-    sl.registerLazySingleton<InternetConnectionChecker>(() => InternetConnectionChecker.createInstance());
+    sl.registerLazySingleton<InternetConnectionChecker>(
+      () => InternetConnectionChecker.createInstance(),
+    );
     sl.registerLazySingleton<NetworkInfo>(
-      () => NetworkInfoImpl(
-        connectivity: sl(),
-        connectionChecker: sl(),
-      ),
+      () => NetworkInfoImpl(connectivity: sl(), connectionChecker: sl()),
     );
 
     // gRPC Client
-    sl.registerLazySingleton<ClientChannel>(() => ClientChannel(
-          'localhost',
-          port: 5000,
-          options: const ChannelOptions(
-            credentials: ChannelCredentials.insecure(),
-          ),
-        ));
+    sl.registerLazySingleton<ClientChannel>(
+      () => ClientChannel(
+        'localhost',
+        port: 5000,
+        options: const ChannelOptions(
+          credentials: ChannelCredentials.insecure(),
+        ),
+      ),
+    );
 
     // Cubits
     sl.registerLazySingleton<DeviceInfoCubit>(
@@ -52,10 +53,7 @@ class DependencyInjection {
 
     // Auth
     sl.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(
-        channel: sl(),
-        networkInfo: sl(),
-      ),
+      () => AuthRemoteDataSourceImpl(channel: sl(), networkInfo: sl()),
     );
     sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(remoteDataSource: sl()),
@@ -63,8 +61,12 @@ class DependencyInjection {
     sl.registerLazySingleton(() => CheckEmailUseCase(sl()));
     sl.registerLazySingleton(() => LoginUseCase(sl()));
     sl.registerFactory(() => CheckEmailBloc(checkEmailUseCase: sl()));
-    sl.registerFactory(() => LoginBloc(loginUseCase: sl(), storageHelper: sl()));
-    sl.registerFactory(() => SentEmailOtpBloc(sentEmailOtpUseCase: sl()));
+    sl.registerFactory(
+      () => LoginBloc(loginUseCase: sl(), storageHelper: sl()),
+    );
+    sl.registerFactory(
+      () => SentEmailOtpBloc(sentEmailOtpUseCase: sl(), storageHelper: sl()),
+    );
     sl.registerLazySingleton(() => SentEmailOtpUseCase(sl()));
   }
 }

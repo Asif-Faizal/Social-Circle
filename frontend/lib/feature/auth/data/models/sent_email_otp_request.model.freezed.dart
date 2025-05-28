@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SentEmailOtpRequestModel {
 
- String get email;
+ String get email; String get deviceId; String get deviceOs;
 /// Create a copy of SentEmailOtpRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SentEmailOtpRequestModelCopyWith<SentEmailOtpRequestModel> get copyWith => _$Se
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SentEmailOtpRequestModel&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SentEmailOtpRequestModel&&(identical(other.email, email) || other.email == email)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email);
+int get hashCode => Object.hash(runtimeType,email,deviceId,deviceOs);
 
 @override
 String toString() {
-  return 'SentEmailOtpRequestModel(email: $email)';
+  return 'SentEmailOtpRequestModel(email: $email, deviceId: $deviceId, deviceOs: $deviceOs)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SentEmailOtpRequestModelCopyWith<$Res>  {
   factory $SentEmailOtpRequestModelCopyWith(SentEmailOtpRequestModel value, $Res Function(SentEmailOtpRequestModel) _then) = _$SentEmailOtpRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String email
+ String email, String deviceId, String deviceOs
 });
 
 
@@ -66,9 +66,11 @@ class _$SentEmailOtpRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SentEmailOtpRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? deviceId = null,Object? deviceOs = null,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String,deviceOs: null == deviceOs ? _self.deviceOs : deviceOs // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -80,10 +82,12 @@ as String,
 @JsonSerializable()
 
 class _SentEmailOtpRequestModel implements SentEmailOtpRequestModel {
-  const _SentEmailOtpRequestModel({required this.email});
+  const _SentEmailOtpRequestModel({required this.email, required this.deviceId, required this.deviceOs});
   factory _SentEmailOtpRequestModel.fromJson(Map<String, dynamic> json) => _$SentEmailOtpRequestModelFromJson(json);
 
 @override final  String email;
+@override final  String deviceId;
+@override final  String deviceOs;
 
 /// Create a copy of SentEmailOtpRequestModel
 /// with the given fields replaced by the non-null parameter values.
@@ -98,16 +102,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SentEmailOtpRequestModel&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SentEmailOtpRequestModel&&(identical(other.email, email) || other.email == email)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email);
+int get hashCode => Object.hash(runtimeType,email,deviceId,deviceOs);
 
 @override
 String toString() {
-  return 'SentEmailOtpRequestModel(email: $email)';
+  return 'SentEmailOtpRequestModel(email: $email, deviceId: $deviceId, deviceOs: $deviceOs)';
 }
 
 
@@ -118,7 +122,7 @@ abstract mixin class _$SentEmailOtpRequestModelCopyWith<$Res> implements $SentEm
   factory _$SentEmailOtpRequestModelCopyWith(_SentEmailOtpRequestModel value, $Res Function(_SentEmailOtpRequestModel) _then) = __$SentEmailOtpRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String email
+ String email, String deviceId, String deviceOs
 });
 
 
@@ -135,9 +139,11 @@ class __$SentEmailOtpRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of SentEmailOtpRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? deviceId = null,Object? deviceOs = null,}) {
   return _then(_SentEmailOtpRequestModel(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String,deviceOs: null == deviceOs ? _self.deviceOs : deviceOs // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

@@ -12,5 +12,9 @@ abstract class AuthRepository {
     required String deviceId,
     required String deviceOs,
   });
-  Future<Either<Failure, SentEmailOtpEntity>> sentEmailOtp(String email);
-} 
+  Future<Either<Failure, SentEmailOtpEntity>> sentEmailOtp({
+    required String email,
+    required String deviceId,
+    required String deviceOs,
+  });
+}

@@ -7,6 +7,8 @@ part 'sent_email_otp_request.model.g.dart';
 abstract class SentEmailOtpRequestModel with _$SentEmailOtpRequestModel {
   const factory SentEmailOtpRequestModel({
     required String email,
+    required String deviceId,
+    required String deviceOs,
   }) = _SentEmailOtpRequestModel;
 
   factory SentEmailOtpRequestModel.fromJson(Map<String, dynamic> json) =>

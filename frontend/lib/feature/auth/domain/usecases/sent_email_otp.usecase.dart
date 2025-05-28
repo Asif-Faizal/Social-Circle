@@ -11,16 +11,27 @@ class SentEmailOtpUseCase implements UseCase<SentEmailOtpEntity, SentEmailOtpPar
   SentEmailOtpUseCase(this.repository);
 
   @override
-  Future<Either<Failure, SentEmailOtpEntity>> call(SentEmailOtpParams params) async {
-    return await repository.sentEmailOtp(params.email);
+  Future<Either<Failure, SentEmailOtpEntity>> call(
+      SentEmailOtpParams params) async {
+    return await repository.sentEmailOtp(
+      email: params.email,
+      deviceId: params.deviceId,
+      deviceOs: params.deviceOs,
+    );
   }
 }
 
 class SentEmailOtpParams extends Equatable {
   final String email;
+  final String deviceId;
+  final String deviceOs;
 
-  const SentEmailOtpParams({required this.email});
+  const SentEmailOtpParams({
+    required this.email,
+    required this.deviceId,
+    required this.deviceOs,
+  });
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [email, deviceId, deviceOs];
 } 
