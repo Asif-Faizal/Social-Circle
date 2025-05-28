@@ -8,6 +8,7 @@ abstract class LogoutRequestModel with _$LogoutRequestModel {
   const factory LogoutRequestModel({
     required String userId,
     required String deviceId,
+    required String accessToken,
   }) = _LogoutRequestModel;
 
   factory LogoutRequestModel.fromJson(Map<String, dynamic> json) =>

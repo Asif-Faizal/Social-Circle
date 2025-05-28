@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/routing/routing_contants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/routing/routing_service.dart';
-import 'package:frontend/core/storage/storage_helper.dart';
-
-import '../../../core/injection/injection_container.dart';
+import 'package:frontend/core/widgets/error.snackbar.dart';
+import 'package:frontend/core/widgets/network.snackbar.dart';
+import '../../../core/routing/routing_contants.dart';
+import '../../auth/bloc/logout/logout_bloc.dart';
+import '../../auth/bloc/logout/logout_event.dart';
+import '../../auth/bloc/logout/logout_state.dart';
 import '../widgets/chat.tile.dart';
 import '../widgets/home.drawer.dart';
 import '../widgets/online.chat.card.dart';
@@ -132,36 +135,60 @@ class HomeScreen extends StatelessWidget {
         onEditProfile: () {},
         onSettings: () {},
         onLogout: () async {
-          final storageHelper = sl.get<StorageHelper>();
-          await storageHelper.clearAuthData();
-          NavigationService().navigateToAndRemoveUntil(
-            RoutingConstants.initialScreen,
-          );
+          context.read<LogoutBloc>().add(LogoutEvent.logout());
+          NavigationService().goBack();
         },
       ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPersistentHeader(pinned: true, delegate: _OnlineListDelegate()),
-          SliverPersistentHeader(pinned: true, delegate: _ChatHeaderDelegate()),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return ChatTile(
-                  name: 'John Cena',
-                  imageUrl:
-                      'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
-                  lastMessage: 'Hello',
-                  lastMessageTime: '12:00',
-                  unreadMessageCount: 2,
-                  isOnline: true,
-                  lastMessageStatus: 'sent',
-                );
-              }, childCount: 20),
+      body: BlocListener<LogoutBloc, LogoutState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            orElse: () {},
+            success: (data) {
+              NavigationService().navigateToAndRemoveUntil(
+                RoutingConstants.initialScreen,
+              );
+            },
+            error: (error) {
+              showErrorSnackBar(context, error);
+            },
+            networkError: (error) {
+              showNetworkSnackBar(context, error,(){
+                context.read<LogoutBloc>().add(LogoutEvent.logout());
+                NavigationService().goBack();
+              });
+            },
+          );
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _OnlineListDelegate(),
             ),
-          ),
-        ],
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _ChatHeaderDelegate(),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return ChatTile(
+                    name: 'John Cena',
+                    imageUrl:
+                        'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
+                    lastMessage: 'Hello',
+                    lastMessageTime: '12:00',
+                    unreadMessageCount: 2,
+                    isOnline: true,
+                    lastMessageStatus: 'sent',
+                  );
+                }, childCount: 20),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

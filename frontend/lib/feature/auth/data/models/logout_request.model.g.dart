@@ -10,7 +10,12 @@ _LogoutRequestModel _$LogoutRequestModelFromJson(Map<String, dynamic> json) =>
     _LogoutRequestModel(
       userId: json['userId'] as String,
       deviceId: json['deviceId'] as String,
+      accessToken: json['accessToken'] as String,
     );
 
 Map<String, dynamic> _$LogoutRequestModelToJson(_LogoutRequestModel instance) =>
-    <String, dynamic>{'userId': instance.userId, 'deviceId': instance.deviceId};
+    <String, dynamic>{
+      'userId': instance.userId,
+      'deviceId': instance.deviceId,
+      'accessToken': instance.accessToken,
+    };
