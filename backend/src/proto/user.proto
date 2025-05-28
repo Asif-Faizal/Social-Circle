@@ -11,6 +11,7 @@ service UserService {
   rpc LogoutDevice (LogoutDeviceRequest) returns (LogoutDeviceResponse);
   rpc LogoutAllDevices (LogoutAllDevicesRequest) returns (LogoutAllDevicesResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
   rpc CheckEmail (CheckEmailRequest) returns (CheckEmailResponse);
 }
 
@@ -133,4 +134,13 @@ message CheckEmailResponse {
   bool success = 1;
   string message = 2;
   bool is_registered = 3;
+}
+
+message GetUserInfoRequest {
+}
+
+message GetUserInfoResponse {
+  bool success = 1;
+  string message = 2;
+  User user = 3;
 } 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../feature/auth/screens/enterotp.screen.dart';
 import '../../feature/auth/screens/password.screen.dart';
+import '../../feature/home/screens/account_info.screen.dart';
 import '../../feature/home/screens/home.screen.dart';
 import '../../feature/splash/screens/initial.screen.dart';
 import '../../feature/splash/screens/splash.screen.dart';
@@ -28,6 +29,8 @@ class RouteGenerator {
         return _buildRoute(PasswordScreen(args: args as PasswordArguments), settings);
       case RoutingConstants.homeScreen:
         return _buildRoute(const HomeScreen(), settings);
+      case RoutingConstants.accountInfoScreen:
+        return _buildRoute(const AccountInfoScreen(), settings);
       default:
         return _errorRoute('No route found', context);
     }

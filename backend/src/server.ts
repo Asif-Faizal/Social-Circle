@@ -47,6 +47,7 @@ async function startServer() {
       LogoutDevice: userRoutes.logoutDevice,
       LogoutAllDevices: userRoutes.logoutAllDevices,
       RefreshToken: userRoutes.refreshToken,
+      GetUserInfo: userRoutes.getUserInfo,
       CheckEmail: userRoutes.checkEmail
     });
 

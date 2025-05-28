@@ -100,6 +100,19 @@ interface CheckEmailResponse {
   is_registered: boolean;
 }
 
+interface GetUserInfoRequest {
+}
+
+interface GetUserInfoResponse {
+  success: boolean;
+  message: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
+
 // Initialize controller
 const userController = new UserController();
 
@@ -184,5 +197,13 @@ export const userRoutes = {
         details: 'Error processing checkEmail request'
       });
     }
+  },
+
+  // Get user info handler
+  getUserInfo: async (
+    call: ServerUnaryCall<GetUserInfoRequest, GetUserInfoResponse>,
+    callback: sendUnaryData<GetUserInfoResponse>
+  ): Promise<void> => {
+    await userController.getUserInfo(call, callback);
   }
 }; 

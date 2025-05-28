@@ -138,6 +138,9 @@ class HomeScreen extends StatelessWidget {
           context.read<LogoutBloc>().add(LogoutEvent.logout());
           NavigationService().goBack();
         },
+        onAccount: () {
+          NavigationService().navigateTo(RoutingConstants.accountInfoScreen);
+        },
       ),
       body: BlocListener<LogoutBloc, LogoutState>(
         listener: (context, state) {

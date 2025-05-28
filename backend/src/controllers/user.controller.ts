@@ -102,6 +102,20 @@ interface RefreshTokenResponse {
   refresh_token: string;
 }
 
+interface GetUserInfoRequest {
+  // Authenticate request
+}
+
+interface GetUserInfoResponse {
+  success: boolean;
+  message: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
+
 export class UserController {
   private userService: UserService;
 
@@ -530,6 +544,44 @@ export class UserController {
       callback(null, response);
     } catch (error: any) {
       console.error('Error in checkEmail controller:', error);
+      callback({
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  async getUserInfo(
+    call: ServerUnaryCall<GetUserInfoRequest, GetUserInfoResponse>,
+    callback: sendUnaryData<GetUserInfoResponse>
+  ): Promise<void> {
+    try {
+      // Authenticate request
+      const auth = authenticate(call);
+
+      const input = { userId: auth.userId };
+      const result = await this.userService.getUserInfo(input);
+
+      if (!result.success || !result.user) {
+        callback(null, {
+          success: false,
+          message: result.message,
+          user: {
+            id: '',
+            username: '',
+            email: '',
+          },
+        });
+        return;
+      }
+
+      callback(null, {
+        success: true,
+        message: result.message,
+        user: result.user,
+      });
+    } catch (error: any) {
+      console.error('Error in getUserInfo controller:', error);
       callback({
         code: error.code || status.INTERNAL,
         message: error.message || 'Internal server error',

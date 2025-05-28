@@ -97,6 +97,20 @@ export interface CheckEmailOutput {
   isRegistered: boolean;
 }
 
+export interface GetUserInfoInput {
+  userId: string;
+}
+
+export interface GetUserInfoOutput {
+  success: boolean;
+  message: string;
+  user?: {
+    id: string;
+    username: string;
+    email: string;
+  };
+}
+
 export class UserService {
   private deviceSessionService: DeviceSessionService;
 
@@ -480,6 +494,36 @@ export class UserService {
         success: false,
         message: 'Error checking email',
         isRegistered: false
+      };
+    }
+  }
+
+  async getUserInfo(input: GetUserInfoInput): Promise<GetUserInfoOutput> {
+    try {
+      // Fetch user from database
+      const user = await User.findById(input.userId);
+
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'User info retrieved successfully',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+      };
+    } catch (error) {
+      console.error('Error getting user info:', error);
+      return {
+        success: false,
+        message: 'Error getting user info',
       };
     }
   }
