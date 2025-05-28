@@ -12,6 +12,7 @@ import 'core/notification/data/firebase_options.dart';
 import 'core/storage/storage_helper.dart';
 import 'core/theme/app_themes.dart';
 import 'feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
+import 'feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<SentEmailOtpBloc>(
           create: (_) => sl<SentEmailOtpBloc>(),
+        ),
+        BlocProvider<VerifyEmailOtpBloc>(
+          create: (_) => sl<VerifyEmailOtpBloc>(),
         ),
       ],
       child: MaterialApp(
