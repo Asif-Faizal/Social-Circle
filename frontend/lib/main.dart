@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/routing/routing_contants.dart';
 import 'package:frontend/core/routing/routing_generator.dart';
 import 'package:frontend/core/routing/routing_service.dart';
-import 'package:frontend/feature/auth/presentation/bloc/check_email/check_email_bloc.dart';
-import 'package:frontend/feature/auth/presentation/bloc/login/login_bloc.dart';
+import 'package:frontend/feature/auth/bloc/check_email/check_email_bloc.dart';
+import 'package:frontend/feature/auth/bloc/login/login_bloc.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'core/injection/injection_container.dart';
 import 'core/notification/data/firebase_options.dart';
 import 'core/storage/storage_helper.dart';
 import 'core/theme/app_themes.dart';
+import 'feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LoginBloc>(
           create: (_) => sl<LoginBloc>(),
+        ),
+        BlocProvider<SentEmailOtpBloc>(
+          create: (_) => sl<SentEmailOtpBloc>(),
         ),
       ],
       child: MaterialApp(

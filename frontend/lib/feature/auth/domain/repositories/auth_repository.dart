@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/check_email.entity.dart';
 import '../entities/login.entity.dart';
+import '../entities/sent_email_otp.entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, CheckEmailEntity>> checkEmail(String email);
@@ -11,4 +12,5 @@ abstract class AuthRepository {
     required String deviceId,
     required String deviceOs,
   });
+  Future<Either<Failure, SentEmailOtpEntity>> sentEmailOtp(String email);
 } 

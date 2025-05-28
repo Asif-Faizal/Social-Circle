@@ -7,9 +7,9 @@ import '../../../core/routing/routing_service.dart';
 import '../../../core/theme/app_themes.dart';
 import '../../../core/widgets/error.snackbar.dart';
 import '../../../core/widgets/network.snackbar.dart';
-import '../presentation/bloc/login/login_bloc.dart';
-import '../presentation/bloc/login/login_event.dart';
-import '../presentation/bloc/login/login_state.dart';
+import '../bloc/login/login_bloc.dart';
+import '../bloc/login/login_event.dart';
+import '../bloc/login/login_state.dart';
 
 class PasswordScreen extends StatelessWidget {
   const PasswordScreen({super.key, required this.args});

@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
 import '../models/login_request.model.dart';
 import '../models/login_response.model.dart';
+import '../models/sent_email_otp_response.model.dart';
 import 'generated/user.pbgrpc.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
@@ -10,6 +11,7 @@ import '../../../../core/network/network_info.dart';
 abstract class AuthRemoteDataSource {
   Future<CheckEmailResponseModel> checkEmail(String email);
   Future<LoginResponseModel> login(LoginRequestModel request);
+  Future<SentEmailOtpResponseModel> sentEmailOtp(String email);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -126,4 +128,39 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw const NetworkFailure('An unexpected network error occurred');
     }
   }
-} 
+
+  @override
+  Future<SentEmailOtpResponseModel> sentEmailOtp(String email) async {
+    try {
+      // Check network connectivity before making the request
+      await networkInfo.checkConnectivity();
+
+      final request = SendOTPRequest()..email = email;
+
+      final response = await _client.sendOTP(
+        request,
+        options: CallOptions(timeout: const Duration(seconds: 10)),
+      );
+      return SentEmailOtpResponseModel(
+        success: response.success,
+        message: response.message,
+      );
+    }on NetworkFailure {
+      rethrow;
+    } on GrpcError catch (e) {
+      switch (e.code) {
+        case StatusCode.unavailable:
+          throw const NetworkFailure('Server is currently unavailable. Please try again later.');
+        case StatusCode.deadlineExceeded:
+          throw const NetworkFailure('Request took too long to complete. Please try again.');
+        default:
+          throw Exception('gRPC Error: ${e.message}');
+      }
+    } catch (e) {
+      if (e is Exception) {
+        throw Exception('Failed to check email: ${e.toString()}');
+      }
+      throw const NetworkFailure('An unexpected network error occurred');
+    }
+  }
+}

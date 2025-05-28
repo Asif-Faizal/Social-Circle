@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/check_email.usecase.dart';
-import '../../../../../core/error/failures.dart';
+import '../../domain/usecases/check_email.usecase.dart';
+import '../../../../core/error/failures.dart';
 import 'check_email_event.dart';
 import 'check_email_state.dart';
 
