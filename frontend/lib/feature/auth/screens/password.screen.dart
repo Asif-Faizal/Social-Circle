@@ -111,11 +111,7 @@ class PasswordScreen extends StatelessWidget {
                   SizedBox(height: size.height * 0.02),
                   BlocBuilder<ObscurePasswordCubit, ObscurePasswordState>(
                     builder: (context, state) {
-                      final isObscure = state.maybeWhen(
-                        showPassword: () => false,
-                        obscurePassword: () => true,
-                        orElse: () => true,
-                      );
+                      final isObscure = state.passwordObscure;
                       return TextFormField(
                         controller: passwordController,
                         decoration: InputDecoration(
@@ -129,7 +125,7 @@ class PasswordScreen extends StatelessWidget {
                                   : Icons.visibility,
                             ),
                             onPressed: () =>
-                                context.read<ObscurePasswordCubit>().toggle(),
+                                context.read<ObscurePasswordCubit>().togglePassword(),
                           ),
                         ),
                         keyboardType: TextInputType.text,
@@ -143,11 +139,7 @@ class PasswordScreen extends StatelessWidget {
                     SizedBox(height: size.height * 0.01),
                     BlocBuilder<ObscurePasswordCubit, ObscurePasswordState>(
                       builder: (context, state) {
-                        final isObscure = state.maybeWhen(
-                          showPassword: () => false,
-                          obscurePassword: () => true,
-                          orElse: () => true,
-                        );
+                        final isObscure = state.confirmObscure;
                         return TextFormField(
                           controller: confirmPasswordController,
                           decoration: InputDecoration(
@@ -161,7 +153,7 @@ class PasswordScreen extends StatelessWidget {
                                     : Icons.visibility,
                               ),
                               onPressed: () =>
-                                  context.read<ObscurePasswordCubit>().toggle(),
+                                  context.read<ObscurePasswordCubit>().toggleConfirm(),
                             ),
                           ),
                           keyboardType: TextInputType.text,

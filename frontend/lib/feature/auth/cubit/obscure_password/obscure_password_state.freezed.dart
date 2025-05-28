@@ -15,159 +15,131 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ObscurePasswordState {
 
-
+ bool get passwordObscure; bool get confirmObscure;
+/// Create a copy of ObscurePasswordState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ObscurePasswordStateCopyWith<ObscurePasswordState> get copyWith => _$ObscurePasswordStateCopyWithImpl<ObscurePasswordState>(this as ObscurePasswordState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ObscurePasswordState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ObscurePasswordState&&(identical(other.passwordObscure, passwordObscure) || other.passwordObscure == passwordObscure)&&(identical(other.confirmObscure, confirmObscure) || other.confirmObscure == confirmObscure));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,passwordObscure,confirmObscure);
 
 @override
 String toString() {
-  return 'ObscurePasswordState()';
+  return 'ObscurePasswordState(passwordObscure: $passwordObscure, confirmObscure: $confirmObscure)';
 }
 
 
 }
 
 /// @nodoc
-class $ObscurePasswordStateCopyWith<$Res>  {
-$ObscurePasswordStateCopyWith(ObscurePasswordState _, $Res Function(ObscurePasswordState) __);
+abstract mixin class $ObscurePasswordStateCopyWith<$Res>  {
+  factory $ObscurePasswordStateCopyWith(ObscurePasswordState value, $Res Function(ObscurePasswordState) _then) = _$ObscurePasswordStateCopyWithImpl;
+@useResult
+$Res call({
+ bool passwordObscure, bool confirmObscure
+});
+
+
+
+
+}
+/// @nodoc
+class _$ObscurePasswordStateCopyWithImpl<$Res>
+    implements $ObscurePasswordStateCopyWith<$Res> {
+  _$ObscurePasswordStateCopyWithImpl(this._self, this._then);
+
+  final ObscurePasswordState _self;
+  final $Res Function(ObscurePasswordState) _then;
+
+/// Create a copy of ObscurePasswordState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? passwordObscure = null,Object? confirmObscure = null,}) {
+  return _then(_self.copyWith(
+passwordObscure: null == passwordObscure ? _self.passwordObscure : passwordObscure // ignore: cast_nullable_to_non_nullable
+as bool,confirmObscure: null == confirmObscure ? _self.confirmObscure : confirmObscure // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
 }
 
 
 /// @nodoc
 
 
-class _Initial extends ObscurePasswordState {
-  const _Initial(): super._();
+class _ObscurePasswordState implements ObscurePasswordState {
+  const _ObscurePasswordState({this.passwordObscure = true, this.confirmObscure = true});
   
 
+@override@JsonKey() final  bool passwordObscure;
+@override@JsonKey() final  bool confirmObscure;
 
-
+/// Create a copy of ObscurePasswordState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ObscurePasswordStateCopyWith<_ObscurePasswordState> get copyWith => __$ObscurePasswordStateCopyWithImpl<_ObscurePasswordState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ObscurePasswordState&&(identical(other.passwordObscure, passwordObscure) || other.passwordObscure == passwordObscure)&&(identical(other.confirmObscure, confirmObscure) || other.confirmObscure == confirmObscure));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,passwordObscure,confirmObscure);
 
 @override
 String toString() {
-  return 'ObscurePasswordState.initial()';
+  return 'ObscurePasswordState(passwordObscure: $passwordObscure, confirmObscure: $confirmObscure)';
 }
 
 
 }
-
-
-
 
 /// @nodoc
+abstract mixin class _$ObscurePasswordStateCopyWith<$Res> implements $ObscurePasswordStateCopyWith<$Res> {
+  factory _$ObscurePasswordStateCopyWith(_ObscurePasswordState value, $Res Function(_ObscurePasswordState) _then) = __$ObscurePasswordStateCopyWithImpl;
+@override @useResult
+$Res call({
+ bool passwordObscure, bool confirmObscure
+});
 
 
-class _Loading extends ObscurePasswordState {
-  const _Loading(): super._();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'ObscurePasswordState.loading()';
-}
 
 
 }
-
-
-
-
 /// @nodoc
+class __$ObscurePasswordStateCopyWithImpl<$Res>
+    implements _$ObscurePasswordStateCopyWith<$Res> {
+  __$ObscurePasswordStateCopyWithImpl(this._self, this._then);
 
+  final _ObscurePasswordState _self;
+  final $Res Function(_ObscurePasswordState) _then;
 
-class _ObscurePassword extends ObscurePasswordState {
-  const _ObscurePassword(): super._();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ObscurePassword);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'ObscurePasswordState.obscurePassword()';
+/// Create a copy of ObscurePasswordState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? passwordObscure = null,Object? confirmObscure = null,}) {
+  return _then(_ObscurePasswordState(
+passwordObscure: null == passwordObscure ? _self.passwordObscure : passwordObscure // ignore: cast_nullable_to_non_nullable
+as bool,confirmObscure: null == confirmObscure ? _self.confirmObscure : confirmObscure // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
 }
 
 
 }
-
-
-
-
-/// @nodoc
-
-
-class _ShowPassword extends ObscurePasswordState {
-  const _ShowPassword(): super._();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowPassword);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'ObscurePasswordState.showPassword()';
-}
-
-
-}
-
-
-
 
 // dart format on
