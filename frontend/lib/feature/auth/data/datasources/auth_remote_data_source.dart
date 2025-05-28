@@ -3,6 +3,8 @@ import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
 import '../models/login_request.model.dart';
 import '../models/login_response.model.dart';
+import '../models/sent_email_otp_request.model.dart';
+import '../models/sent_email_otp_response.model.dart';
 import 'generated/user.pbgrpc.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
@@ -10,6 +12,8 @@ import '../../../../core/network/network_info.dart';
 abstract class AuthRemoteDataSource {
   Future<CheckEmailResponseModel> checkEmail(String email);
   Future<LoginResponseModel> login(LoginRequestModel request);
+  Future<SentEmailOtpResponseModel> sentEmailOtp(
+      SentEmailOtpRequestModel request);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -18,10 +22,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final NetworkInfo networkInfo;
   late final UserServiceClient _client;
 
-  AuthRemoteDataSourceImpl({
-    required this.channel,
-    required this.networkInfo,
-  }) {
+  AuthRemoteDataSourceImpl({required this.channel, required this.networkInfo}) {
     _client = UserServiceClient(channel);
   }
 
@@ -32,17 +33,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       await networkInfo.checkConnectivity();
 
       final request = CheckEmailRequest()..email = email;
-      
+
       // Add timeout to gRPC call
-      final response = await _client.checkEmail(
-        request,
-        options: CallOptions(timeout: const Duration(seconds: 10)),
-      ).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          throw const NetworkFailure('Request timed out. Please check your connection and try again.');
-        },
-      );
+      final response = await _client
+          .checkEmail(
+            request,
+            options: CallOptions(timeout: const Duration(seconds: 10)),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw const NetworkFailure(
+                'Request timed out. Please check your connection and try again.',
+              );
+            },
+          );
       print(response);
       return CheckEmailResponseModel(
         success: response.success,
@@ -54,9 +59,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on GrpcError catch (e) {
       switch (e.code) {
         case StatusCode.unavailable:
-          throw const NetworkFailure('Server is currently unavailable. Please try again later.');
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
         case StatusCode.deadlineExceeded:
-          throw const NetworkFailure('Request took too long to complete. Please try again.');
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
         default:
           throw Exception('gRPC Error: ${e.message}');
       }
@@ -74,22 +83,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // Check network connectivity before making the request
       await networkInfo.checkConnectivity();
 
-      final loginRequest = LoginRequest()
-        ..email = request.email
-        ..password = request.password
-        ..deviceId = "1234567890"
-        ..deviceOs = request.deviceOs;
-      
+      final loginRequest =
+          LoginRequest()
+            ..email = request.email
+            ..password = request.password
+            ..deviceId = "1234567890"
+            ..deviceOs = request.deviceOs;
+
       // Add timeout to gRPC call
-      final response = await _client.login(
-        loginRequest,
-        options: CallOptions(timeout: const Duration(seconds: 10)),
-      ).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          throw const NetworkFailure('Request timed out. Please check your connection and try again.');
-        },
-      );
+      final response = await _client
+          .login(
+            loginRequest,
+            options: CallOptions(timeout: const Duration(seconds: 10)),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw const NetworkFailure(
+                'Request timed out. Please check your connection and try again.',
+              );
+            },
+          );
       print(request.email);
       print(request.password);
       print(request.deviceId);
@@ -111,9 +125,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on GrpcError catch (e) {
       switch (e.code) {
         case StatusCode.unavailable:
-          throw const NetworkFailure('Server is currently unavailable. Please try again later.');
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
         case StatusCode.deadlineExceeded:
-          throw const NetworkFailure('Request took too long to complete. Please try again.');
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
         case StatusCode.unauthenticated:
           throw const ServerFailure('Invalid email or password.');
         default:
@@ -126,4 +144,48 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw const NetworkFailure('An unexpected network error occurred');
     }
   }
-} 
+
+  @override
+  Future<SentEmailOtpResponseModel> sentEmailOtp(
+      SentEmailOtpRequestModel request) async {
+    try {
+      // Check network connectivity before making the request
+      await networkInfo.checkConnectivity();
+
+      final sendOtpRequest = SendOTPRequest()
+        ..email = request.email
+        ..deviceId = request.deviceId
+        ..deviceOs = request.deviceOs;
+
+      final response = await _client.sendOTP(
+        sendOtpRequest,
+        options: CallOptions(timeout: const Duration(seconds: 10)),
+      );
+      print(response);
+      return SentEmailOtpResponseModel(
+        success: response.success,
+        message: response.message,
+      );
+    } on NetworkFailure {
+      rethrow;
+    } on GrpcError catch (e) {
+      switch (e.code) {
+        case StatusCode.unavailable:
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
+        case StatusCode.deadlineExceeded:
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
+        default:
+          throw Exception('gRPC Error: ${e.message}');
+      }
+    } catch (e) {
+      if (e is Exception) {
+        throw Exception('Failed to check email: ${e.toString()}');
+      }
+      throw const NetworkFailure('An unexpected network error occurred');
+    }
+  }
+}

@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/routing/routing_contants.dart';
+import 'package:frontend/core/routing/routing_service.dart';
+import 'package:frontend/core/storage/storage_helper.dart';
 
+import '../../../core/injection/injection_container.dart';
 import '../widgets/chat.tile.dart';
 import '../widgets/home.drawer.dart';
 import '../widgets/online.chat.card.dart';
 
 class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     // Calculate the current height ensuring it stays within the allowed range.
     // Using a direct linear relation between shrinkOffset and height prevents
     // tiny floating-point rounding errors that can make layoutExtent slightly
     // larger than paintExtent (see Flutter issue #111906).
     final height = (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
-    
+
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       height: height,
@@ -24,7 +32,8 @@ class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
         itemBuilder: (context, index) {
           return OnlineChatCard(
             name: 'John Cena',
-            imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
+            imageUrl:
+                'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
           );
         },
       ),
@@ -38,12 +47,17 @@ class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 50.0;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
 
 class _ChatHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       height: maxExtent,
       decoration: BoxDecoration(
@@ -55,7 +69,7 @@ class _ChatHeaderDelegate extends SliverPersistentHeaderDelegate {
           colors: [
             Theme.of(context).scaffoldBackgroundColor,
             Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.9),
-            Theme.of(context).scaffoldBackgroundColor.withValues(alpha:0.01),
+            Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.01),
           ],
           stops: const [0.0, 0.8, 1.0],
         ),
@@ -67,10 +81,7 @@ class _ChatHeaderDelegate extends SliverPersistentHeaderDelegate {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            Text(
-              'Chats',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('Chats', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 5),
             Divider(height: 1, thickness: 0.2),
             const SizedBox(height: 10),
@@ -87,7 +98,8 @@ class _ChatHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 55.0;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }
 
 class HomeScreen extends StatelessWidget {
@@ -103,50 +115,50 @@ class HomeScreen extends StatelessWidget {
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         ],
         leading: Builder(
-          builder: (context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: const Icon(Icons.menu),
-          ),
+          builder:
+              (context) => IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                icon: const Icon(Icons.menu),
+              ),
         ),
       ),
       drawer: HomeDrawer(
         name: 'John Cena',
         email: 'john.cena@gmail.com',
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
         onEditProfile: () {},
         onSettings: () {},
-        onLogout: () {},
+        onLogout: () async {
+          final storageHelper = sl.get<StorageHelper>();
+          await storageHelper.clearAuthData();
+          NavigationService().navigateToAndRemoveUntil(
+            RoutingConstants.initialScreen,
+          );
+        },
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _OnlineListDelegate(),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _ChatHeaderDelegate(),
-          ),
+          SliverPersistentHeader(pinned: true, delegate: _OnlineListDelegate()),
+          SliverPersistentHeader(pinned: true, delegate: _ChatHeaderDelegate()),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return ChatTile(
-                    name: 'John Cena',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
-                    lastMessage: 'Hello',
-                    lastMessageTime: '12:00',
-                    unreadMessageCount: 2,
-                    isOnline: true,
-                    lastMessageStatus: 'sent',
-                  );
-                },
-                childCount: 20,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return ChatTile(
+                  name: 'John Cena',
+                  imageUrl:
+                      'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
+                  lastMessage: 'Hello',
+                  lastMessageTime: '12:00',
+                  unreadMessageCount: 2,
+                  isOnline: true,
+                  lastMessageStatus: 'sent',
+                );
+              }, childCount: 20),
             ),
           ),
         ],

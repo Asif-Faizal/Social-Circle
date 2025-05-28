@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/entities/check_email.entity.dart';
+import '../../domain/entities/check_email.entity.dart';
 
 part 'check_email_state.freezed.dart';
 

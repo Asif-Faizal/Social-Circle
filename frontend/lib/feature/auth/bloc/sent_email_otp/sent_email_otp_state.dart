@@ -1,22 +1,22 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/entities/login.entity.dart';
+import '../../domain/entities/sent_email_otp.entity.dart';
 
-part 'login_state.freezed.dart';
+part 'sent_email_otp_state.freezed.dart';
 
 @freezed
-class LoginState with _$LoginState {
-  const factory LoginState.initial() = _Initial;
-  const factory LoginState.loading() = _Loading;
-  const factory LoginState.success(LoginEntity data) = _Success;
-  const factory LoginState.error(String message) = _Error;
-  const factory LoginState.networkError(String message) = _NetworkError;
+class SentEmailOtpState with _$SentEmailOtpState {
+  const factory SentEmailOtpState.initial() = _Initial;
+  const factory SentEmailOtpState.loading() = _Loading;
+  const factory SentEmailOtpState.success(SentEmailOtpEntity data) = _Success;
+  const factory SentEmailOtpState.error(String message) = _Error;
+  const factory SentEmailOtpState.networkError(String message) = _NetworkError;
 
-  const LoginState._();
+  const SentEmailOtpState._();
 
   T maybeWhen<T>({
     T Function()? initial,
     T Function()? loading,
-    T Function(LoginEntity data)? success,
+    T Function(SentEmailOtpEntity data)? success,
     T Function(String message)? error,
     T Function(String message)? networkError,
     required T Function() orElse,

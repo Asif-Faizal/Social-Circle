@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../entities/login.entity.dart';
 import '../repositories/auth_repository.dart';
 
 @injectable
-class LoginUseCase {
+class LoginUseCase implements UseCase<LoginEntity, LoginParams> {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
