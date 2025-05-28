@@ -114,6 +114,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String deviceId,
     required String deviceOs,
+    required String name,
   }) async {
     try {
       final request = RegisterRequestModel(
@@ -121,6 +122,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
         deviceId: deviceId,
         deviceOs: deviceOs,
+        name: name,
       );
       final result = await remoteDataSource.register(request);
       if (result.success == false) {

@@ -26,6 +26,7 @@ abstract class AuthRepository {
     required String deviceOs,
   });
   Future<Either<Failure, RegisterEntity>> register({
+    required String name,
     required String email,
     required String password,
     required String deviceId,

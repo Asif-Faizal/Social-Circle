@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RegisterRequestModel {
 
- String get email; String get password; String get deviceId; String get deviceOs;
+ String get name; String get email; String get password; String get deviceId; String get deviceOs;
 /// Create a copy of RegisterRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $RegisterRequestModelCopyWith<RegisterRequestModel> get copyWith => _$RegisterRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequestModel&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequestModel&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,deviceId,deviceOs);
+int get hashCode => Object.hash(runtimeType,name,email,password,deviceId,deviceOs);
 
 @override
 String toString() {
-  return 'RegisterRequestModel(email: $email, password: $password, deviceId: $deviceId, deviceOs: $deviceOs)';
+  return 'RegisterRequestModel(name: $name, email: $email, password: $password, deviceId: $deviceId, deviceOs: $deviceOs)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $RegisterRequestModelCopyWith<$Res>  {
   factory $RegisterRequestModelCopyWith(RegisterRequestModel value, $Res Function(RegisterRequestModel) _then) = _$RegisterRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, String deviceId, String deviceOs
+ String name, String email, String password, String deviceId, String deviceOs
 });
 
 
@@ -66,9 +66,10 @@ class _$RegisterRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of RegisterRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? deviceId = null,Object? deviceOs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? password = null,Object? deviceId = null,Object? deviceOs = null,}) {
   return _then(_self.copyWith(
-email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
 as String,deviceOs: null == deviceOs ? _self.deviceOs : deviceOs // ignore: cast_nullable_to_non_nullable
@@ -83,9 +84,10 @@ as String,
 @JsonSerializable()
 
 class _RegisterRequestModel implements RegisterRequestModel {
-  const _RegisterRequestModel({required this.email, required this.password, required this.deviceId, required this.deviceOs});
+  const _RegisterRequestModel({required this.name, required this.email, required this.password, required this.deviceId, required this.deviceOs});
   factory _RegisterRequestModel.fromJson(Map<String, dynamic> json) => _$RegisterRequestModelFromJson(json);
 
+@override final  String name;
 @override final  String email;
 @override final  String password;
 @override final  String deviceId;
@@ -104,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequestModel&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequestModel&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.deviceOs, deviceOs) || other.deviceOs == deviceOs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,deviceId,deviceOs);
+int get hashCode => Object.hash(runtimeType,name,email,password,deviceId,deviceOs);
 
 @override
 String toString() {
-  return 'RegisterRequestModel(email: $email, password: $password, deviceId: $deviceId, deviceOs: $deviceOs)';
+  return 'RegisterRequestModel(name: $name, email: $email, password: $password, deviceId: $deviceId, deviceOs: $deviceOs)';
 }
 
 
@@ -124,7 +126,7 @@ abstract mixin class _$RegisterRequestModelCopyWith<$Res> implements $RegisterRe
   factory _$RegisterRequestModelCopyWith(_RegisterRequestModel value, $Res Function(_RegisterRequestModel) _then) = __$RegisterRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password, String deviceId, String deviceOs
+ String name, String email, String password, String deviceId, String deviceOs
 });
 
 
@@ -141,9 +143,10 @@ class __$RegisterRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of RegisterRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? deviceId = null,Object? deviceOs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? password = null,Object? deviceId = null,Object? deviceOs = null,}) {
   return _then(_RegisterRequestModel(
-email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
 as String,deviceOs: null == deviceOs ? _self.deviceOs : deviceOs // ignore: cast_nullable_to_non_nullable

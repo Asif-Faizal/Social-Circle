@@ -13,6 +13,7 @@ class RegisterUseCase implements UseCase<RegisterEntity, RegisterParams> {
 
   Future<Either<Failure, RegisterEntity>> call(RegisterParams params) {
     return repository.register(
+      name: params.name,
       email: params.email,
       password: params.password,
       deviceId: params.deviceId,
@@ -22,12 +23,14 @@ class RegisterUseCase implements UseCase<RegisterEntity, RegisterParams> {
 }
 
 class RegisterParams {
+  final String name;
   final String email;
   final String password;
   final String deviceId;
   final String deviceOs;
 
   const RegisterParams({
+    required this.name,
     required this.email,
     required this.password,
     required this.deviceId,
