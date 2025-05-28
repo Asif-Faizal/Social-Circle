@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LogoutEvent {
 
- String get userId; String get deviceId;
+ NoParams get params;
 /// Create a copy of LogoutEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $LogoutEventCopyWith<LogoutEvent> get copyWith => _$LogoutEventCopyWithImpl<Logo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutEvent&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutEvent&&(identical(other.params, params) || other.params == params));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,deviceId);
+int get hashCode => Object.hash(runtimeType,params);
 
 @override
 String toString() {
-  return 'LogoutEvent(userId: $userId, deviceId: $deviceId)';
+  return 'LogoutEvent(params: $params)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $LogoutEventCopyWith<$Res>  {
   factory $LogoutEventCopyWith(LogoutEvent value, $Res Function(LogoutEvent) _then) = _$LogoutEventCopyWithImpl;
 @useResult
 $Res call({
- String userId, String deviceId
+ NoParams params
 });
 
 
@@ -63,11 +63,10 @@ class _$LogoutEventCopyWithImpl<$Res>
 
 /// Create a copy of LogoutEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? deviceId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? params = null,}) {
   return _then(_self.copyWith(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
-as String,
+params: null == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as NoParams,
   ));
 }
 
@@ -78,11 +77,10 @@ as String,
 
 
 class _Logout implements LogoutEvent {
-  const _Logout(this.userId, this.deviceId);
+  const _Logout(this.params);
   
 
-@override final  String userId;
-@override final  String deviceId;
+@override final  NoParams params;
 
 /// Create a copy of LogoutEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -94,16 +92,16 @@ _$LogoutCopyWith<_Logout> get copyWith => __$LogoutCopyWithImpl<_Logout>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Logout&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Logout&&(identical(other.params, params) || other.params == params));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,deviceId);
+int get hashCode => Object.hash(runtimeType,params);
 
 @override
 String toString() {
-  return 'LogoutEvent.logout(userId: $userId, deviceId: $deviceId)';
+  return 'LogoutEvent.logout(params: $params)';
 }
 
 
@@ -114,7 +112,7 @@ abstract mixin class _$LogoutCopyWith<$Res> implements $LogoutEventCopyWith<$Res
   factory _$LogoutCopyWith(_Logout value, $Res Function(_Logout) _then) = __$LogoutCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String deviceId
+ NoParams params
 });
 
 
@@ -131,11 +129,10 @@ class __$LogoutCopyWithImpl<$Res>
 
 /// Create a copy of LogoutEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? deviceId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? params = null,}) {
   return _then(_Logout(
-null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
-as String,
+null == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as NoParams,
   ));
 }
 

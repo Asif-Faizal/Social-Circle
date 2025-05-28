@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
 import '../models/login_request.model.dart';
 import '../models/login_response.model.dart';
-import '../models/logout_request.model.dart';
 import '../models/logout_response.model.dart';
 import '../models/register_request.model.dart';
 import '../models/register_response.model.dart';
@@ -25,7 +24,7 @@ abstract class AuthRemoteDataSource {
   Future<VerifyEmailOtpResponseModel> verifyEmailOtp(
       VerifyEmailOtpRequestModel request);
   Future<RegisterResponseModel> register(RegisterRequestModel request);
-  Future<LogoutResponseModel> logout(LogoutRequestModel request);
+  Future<LogoutResponseModel> logout();
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -310,14 +309,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<LogoutResponseModel> logout(LogoutRequestModel request) async {
+  Future<LogoutResponseModel> logout() async {
     try {
       // Check network connectivity before making the request
       await networkInfo.checkConnectivity();
 
-      final logoutRequest = LogoutDeviceRequest()
-        ..userId = request.userId
-        ..deviceId = request.deviceId;
+      final logoutRequest = LogoutDeviceRequest();
 
       final response = await _client.logoutDevice(logoutRequest);
 
