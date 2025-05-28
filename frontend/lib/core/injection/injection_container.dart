@@ -3,7 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 import '../../feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
-import '../../feature/auth/cubit/otp_cubit.dart';
+import '../../feature/auth/cubit/otp/otp_cubit.dart';
 import '../../feature/auth/data/datasources/auth_remote_data_source.dart';
 import '../../feature/auth/data/repositories/auth_repository_impl.dart';
 import '../../feature/auth/domain/repositories/auth_repository.dart';
