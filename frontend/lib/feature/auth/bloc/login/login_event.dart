@@ -8,4 +8,4 @@ abstract class LoginEvent with _$LoginEvent {
     required String email,
     required String password,
   }) = _LoginEvent;
-} 
+}

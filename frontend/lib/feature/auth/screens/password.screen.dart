@@ -10,6 +10,11 @@ import '../../../core/widgets/network.snackbar.dart';
 import '../bloc/login/login_bloc.dart';
 import '../bloc/login/login_event.dart';
 import '../bloc/login/login_state.dart';
+import '../bloc/register/register_bloc.dart';
+import '../bloc/register/register_event.dart';
+import '../bloc/register/register_state.dart';
+import '../cubit/obscure_password/obscure_password_cubit.dart';
+import '../cubit/obscure_password/obscure_password_state.dart';
 
 class PasswordScreen extends StatelessWidget {
   const PasswordScreen({super.key, required this.args});
@@ -36,145 +41,225 @@ class PasswordScreen extends StatelessWidget {
       return null; // Return null if validation passes
     }
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          state.maybeWhen(
-            success: (data) {
-              NavigationService().navigateToAndRemoveUntil(RoutingConstants.homeScreen);
-            },
-            error: (message) {
-              showErrorSnackBar(context, message);
-            },
-            networkError: (message) {
-              showNetworkSnackBar(
-                context,
-                message,
-                () {
-                  if (formKey.currentState!.validate()) {
-                    context.read<LoginBloc>().add(
+    return BlocProvider(
+      create: (_) => ObscurePasswordCubit(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (data) {
+                    NavigationService().navigateToAndRemoveUntil(
+                      RoutingConstants.homeScreen,
+                    );
+                  },
+                  error: (message) {
+                    showErrorSnackBar(context, message);
+                  },
+                  networkError: (message) {
+                    showNetworkSnackBar(context, message, () {
+                      if (formKey.currentState!.validate()) {
+                        context.read<LoginBloc>().add(
                           LoginEvent(
                             email: args.email,
                             password: passwordController.text,
                           ),
                         );
-                  }
-                },
-              );
-            },
-            orElse: () {},
-          );
-        },
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.05,
-            vertical: size.height * 0.05,
-          ),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  args.isRegister ? 'Create Password' : 'Enter Password',
-                  style: textTheme.displayLarge,
-                ),
-                RichText(
-                  text: TextSpan(
-                    style: textTheme.bodyLarge,
-                    children: [
-                      TextSpan(
-                        text:
-                            args.isRegister
-                                ? 'Create a password for '
-                                : 'Enter the password for ',
-                        style: textTheme.bodyLarge,
-                      ),
-                      TextSpan(
-                        text: args.email,
-                        style: textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                          color: AppThemes.primaryColor,
-                          decorationThickness: 0.5,
-                          decorationColor: AppThemes.primaryColor,
+                      }
+                    });
+                  },
+                  orElse: () {},
+                );
+              },
+            ),
+            BlocListener<RegisterBloc, RegisterState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (data) {
+                    NavigationService().navigateToAndRemoveUntil(
+                      RoutingConstants.homeScreen,
+                    );
+                  },
+                  error: (message) {
+                    showErrorSnackBar(context, message);
+                  },
+                  networkError: (message) {
+                    showNetworkSnackBar(context, message, () {});
+                  },
+                  orElse: () {},
+                );
+              },
+            ),
+          ],
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: size.width * 0.05,
+              vertical: size.height * 0.05,
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    args.isRegister ? 'Create Password' : 'Enter Password',
+                    style: textTheme.displayLarge,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      style: textTheme.bodyLarge,
+                      children: [
+                        TextSpan(
+                          text:
+                              args.isRegister
+                                  ? 'Create a password for '
+                                  : 'Enter the password for ',
+                          style: textTheme.bodyLarge,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: size.height * 0.02),
-                TextFormField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    hintText: '********',
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.password),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  validator: validatePassword,
-                ),
-                if (args.isRegister) ...[
-                  SizedBox(height: size.height * 0.01),
-                  TextFormField(
-                    controller: confirmPasswordController,
-                    decoration: const InputDecoration(
-                      hintText: '********',
-                      labelText: 'Confirm Password',
-                      prefixIcon: Icon(Icons.password),
+                        TextSpan(
+                          text: args.email,
+                          style: textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            color: AppThemes.primaryColor,
+                            decorationThickness: 0.5,
+                            decorationColor: AppThemes.primaryColor,
+                          ),
+                        ),
+                      ],
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    validator: validatePassword,
                   ),
-                ],
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        if (args.isRegister) {
-                          if (passwordController.text !=
-                              confirmPasswordController.text) {
-                            showErrorSnackBar(
-                              context,
-                              'Passwords do not match',
-                            );
-                          } else {
-                            // Register
-                          }
-                        } else {
-                          context.read<LoginBloc>().add(
-                                LoginEvent(
+                  SizedBox(height: size.height * 0.02),
+                  BlocBuilder<ObscurePasswordCubit, ObscurePasswordState>(
+                    builder: (context, state) {
+                      final isObscure = state.passwordObscure;
+                      return TextFormField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: '********',
+                          labelText: 'Password',
+                          prefixIcon: const Icon(Icons.password),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed:
+                                () =>
+                                    context
+                                        .read<ObscurePasswordCubit>()
+                                        .togglePassword(),
+                          ),
+                        ),
+                        keyboardType: TextInputType.text,
+                        autocorrect: false,
+                        obscureText: isObscure,
+                        validator: validatePassword,
+                      );
+                    },
+                  ),
+                  if (args.isRegister) ...[
+                    SizedBox(height: size.height * 0.01),
+                    BlocBuilder<ObscurePasswordCubit, ObscurePasswordState>(
+                      builder: (context, state) {
+                        final isObscure = state.confirmObscure;
+                        return TextFormField(
+                          controller: confirmPasswordController,
+                          decoration: InputDecoration(
+                            hintText: '********',
+                            labelText: 'Confirm Password',
+                            prefixIcon: const Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                isObscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed:
+                                  () =>
+                                      context
+                                          .read<ObscurePasswordCubit>()
+                                          .toggleConfirm(),
+                            ),
+                          ),
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
+                          obscureText: isObscure,
+                          validator: validatePassword,
+                        );
+                      },
+                    ),
+                  ],
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          if (args.isRegister) {
+                            if (passwordController.text !=
+                                confirmPasswordController.text) {
+                              showErrorSnackBar(
+                                context,
+                                'Passwords do not match',
+                              );
+                            } else {
+                              context.read<RegisterBloc>().add(
+                                RegisterEvent(
                                   email: args.email,
                                   password: passwordController.text,
                                 ),
                               );
+                            }
+                          } else {
+                            context.read<LoginBloc>().add(
+                              LoginEvent(
+                                email: args.email,
+                                password: passwordController.text,
+                              ),
+                            );
+                          }
                         }
-                      }
-                    },
-                    child: args.isRegister
-                        ? const Text('Register')
-                        : BlocBuilder<LoginBloc, LoginState>(
-                            builder: (context, state) {
-                              return state.maybeWhen(
-                                loading: () => const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                orElse: () => const Text('Login'),
-                              );
-                            },
-                          ),
+                      },
+                      child:
+                          args.isRegister
+                              ? BlocBuilder<RegisterBloc, RegisterState>(
+                                builder: (context, state) {
+                                  return state.maybeWhen(
+                                    loading:
+                                        () => const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                    orElse: () => const Text('Register'),
+                                  );
+                                },
+                              )
+                              : BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  return state.maybeWhen(
+                                    loading:
+                                        () => const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                    orElse: () => const Text('Login'),
+                                  );
+                                },
+                              ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
