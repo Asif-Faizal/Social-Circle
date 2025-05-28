@@ -210,6 +210,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         verifyOtpRequest,
         options: CallOptions(timeout: const Duration(seconds: 10)),
       );
+      print(request.otp);
       print(response);
       return VerifyEmailOtpResponseModel(
         success: response.success,
