@@ -3,6 +3,8 @@ import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
 import '../models/login_request.model.dart';
 import '../models/login_response.model.dart';
+import '../models/register_request.model.dart';
+import '../models/register_response.model.dart';
 import '../models/sent_email_otp_request.model.dart';
 import '../models/sent_email_otp_response.model.dart';
 import '../models/verify_email_otp_request.model.dart';
@@ -18,6 +20,7 @@ abstract class AuthRemoteDataSource {
       SentEmailOtpRequestModel request);
   Future<VerifyEmailOtpResponseModel> verifyEmailOtp(
       VerifyEmailOtpRequestModel request);
+  Future<RegisterResponseModel> register(RegisterRequestModel request);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -234,6 +237,57 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } catch (e) {
       if (e is Exception) {
         throw Exception('Failed to check email: ${e.toString()}');
+      }
+      throw const NetworkFailure('An unexpected network error occurred');
+    }
+  }
+
+  @override
+  Future<RegisterResponseModel> register(RegisterRequestModel request) async {
+    try {
+      // Check network connectivity before making the request
+      await networkInfo.checkConnectivity();
+
+      final registerRequest = RegisterRequest()
+        ..email = request.email
+        ..password = request.password
+        ..deviceId = request.deviceId
+        ..deviceOs = request.deviceOs;
+
+      final response = await _client.register(
+        registerRequest,
+        options: CallOptions(timeout: const Duration(seconds: 10)),
+      );
+      print(response);
+      return RegisterResponseModel(
+        success: response.success,
+        message: response.message,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        newUser: NewUserModel(
+          id: response.user.id,
+          username: response.user.username,
+          email: response.user.email,
+        ),
+      );
+    } on NetworkFailure {
+      rethrow;
+    } on GrpcError catch (e) {
+      switch (e.code) {
+        case StatusCode.unavailable:
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
+        case StatusCode.deadlineExceeded:
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
+        default:
+          throw Exception('gRPC Error: ${e.message}');
+      }
+    } catch (e) {
+      if (e is Exception) {
+        throw Exception('Failed to register: ${e.toString()}');
       }
       throw const NetworkFailure('An unexpected network error occurred');
     }

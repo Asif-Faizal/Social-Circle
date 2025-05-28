@@ -13,7 +13,7 @@ _RegisterResponseModel _$RegisterResponseModelFromJson(
   message: json['message'] as String,
   accessToken: json['access_token'] as String,
   refreshToken: json['refresh_token'] as String,
-  user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
+  newUser: NewUserModel.fromJson(json['newUser'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$RegisterResponseModelToJson(
@@ -23,16 +23,17 @@ Map<String, dynamic> _$RegisterResponseModelToJson(
   'message': instance.message,
   'access_token': instance.accessToken,
   'refresh_token': instance.refreshToken,
-  'user': instance.user,
+  'newUser': instance.newUser,
 };
 
-_UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  id: json['id'] as String,
-  username: json['username'] as String,
-  email: json['email'] as String,
-);
+_NewUserModel _$NewUserModelFromJson(Map<String, dynamic> json) =>
+    _NewUserModel(
+      id: json['id'] as String,
+      username: json['username'] as String,
+      email: json['email'] as String,
+    );
 
-Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
+Map<String, dynamic> _$NewUserModelToJson(_NewUserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'username': instance.username,

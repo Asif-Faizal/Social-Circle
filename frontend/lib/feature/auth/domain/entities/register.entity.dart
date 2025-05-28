@@ -9,15 +9,15 @@ abstract class RegisterEntity with _$RegisterEntity {
     required String message,
     required String accessToken,
     required String refreshToken,
-    required UserEntity user,
+    required NewUserEntity newUser,
   }) = _RegisterEntity;
 }
 
 @freezed
-abstract class UserEntity with _$UserEntity {
-  const factory UserEntity({
+abstract class NewUserEntity with _$NewUserEntity {
+  const factory NewUserEntity({
     required String id,
     required String username,
     required String email,
-  }) = _UserEntity;
+  }) = _NewUserEntity;
 } 

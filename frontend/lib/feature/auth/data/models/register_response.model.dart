@@ -11,7 +11,7 @@ abstract class RegisterResponseModel with _$RegisterResponseModel {
     required String message,
     @JsonKey(name: 'access_token') required String accessToken,
     @JsonKey(name: 'refresh_token') required String refreshToken,
-    required UserModel user,
+    required NewUserModel newUser,
   }) = _RegisterResponseModel;
 
   factory RegisterResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -24,24 +24,24 @@ abstract class RegisterResponseModel with _$RegisterResponseModel {
         message: message,
         accessToken: accessToken,
         refreshToken: refreshToken,
-        user: user.toEntity(),
+        newUser: newUser.toEntity(),
       );
 }
 
 @freezed
-abstract class UserModel with _$UserModel {
-  const factory UserModel({
+abstract class NewUserModel with _$NewUserModel {
+  const factory NewUserModel({
     required String id,
     required String username,
     required String email,
-  }) = _UserModel;
+  }) = _NewUserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory NewUserModel.fromJson(Map<String, dynamic> json) =>
+      _$NewUserModelFromJson(json);
 
-  const UserModel._();
+  const NewUserModel._();
 
-  UserEntity toEntity() => UserEntity(
+  NewUserEntity toEntity() => NewUserEntity(
         id: id,
         username: username,
         email: email,

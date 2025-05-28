@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RegisterResponseModel {
 
- bool get success; String get message;@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'refresh_token') String get refreshToken; UserModel get user;
+ bool get success; String get message;@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'refresh_token') String get refreshToken; NewUserModel get newUser;
 /// Create a copy of RegisterResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $RegisterResponseModelCopyWith<RegisterResponseModel> get copyWith => _$Register
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterResponseModel&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterResponseModel&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.newUser, newUser) || other.newUser == newUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,accessToken,refreshToken,user);
+int get hashCode => Object.hash(runtimeType,success,message,accessToken,refreshToken,newUser);
 
 @override
 String toString() {
-  return 'RegisterResponseModel(success: $success, message: $message, accessToken: $accessToken, refreshToken: $refreshToken, user: $user)';
+  return 'RegisterResponseModel(success: $success, message: $message, accessToken: $accessToken, refreshToken: $refreshToken, newUser: $newUser)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $RegisterResponseModelCopyWith<$Res>  {
   factory $RegisterResponseModelCopyWith(RegisterResponseModel value, $Res Function(RegisterResponseModel) _then) = _$RegisterResponseModelCopyWithImpl;
 @useResult
 $Res call({
- bool success, String message,@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String refreshToken, UserModel user
+ bool success, String message,@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String refreshToken, NewUserModel newUser
 });
 
 
-$UserModelCopyWith<$Res> get user;
+$NewUserModelCopyWith<$Res> get newUser;
 
 }
 /// @nodoc
@@ -66,24 +66,24 @@ class _$RegisterResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of RegisterResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? accessToken = null,Object? refreshToken = null,Object? user = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = null,Object? message = null,Object? accessToken = null,Object? refreshToken = null,Object? newUser = null,}) {
   return _then(_self.copyWith(
 success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
-as String,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserModel,
+as String,newUser: null == newUser ? _self.newUser : newUser // ignore: cast_nullable_to_non_nullable
+as NewUserModel,
   ));
 }
 /// Create a copy of RegisterResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserModelCopyWith<$Res> get user {
+$NewUserModelCopyWith<$Res> get newUser {
   
-  return $UserModelCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
+  return $NewUserModelCopyWith<$Res>(_self.newUser, (value) {
+    return _then(_self.copyWith(newUser: value));
   });
 }
 }
@@ -93,14 +93,14 @@ $UserModelCopyWith<$Res> get user {
 @JsonSerializable()
 
 class _RegisterResponseModel extends RegisterResponseModel {
-  const _RegisterResponseModel({required this.success, required this.message, @JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'refresh_token') required this.refreshToken, required this.user}): super._();
+  const _RegisterResponseModel({required this.success, required this.message, @JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'refresh_token') required this.refreshToken, required this.newUser}): super._();
   factory _RegisterResponseModel.fromJson(Map<String, dynamic> json) => _$RegisterResponseModelFromJson(json);
 
 @override final  bool success;
 @override final  String message;
 @override@JsonKey(name: 'access_token') final  String accessToken;
 @override@JsonKey(name: 'refresh_token') final  String refreshToken;
-@override final  UserModel user;
+@override final  NewUserModel newUser;
 
 /// Create a copy of RegisterResponseModel
 /// with the given fields replaced by the non-null parameter values.
@@ -115,16 +115,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterResponseModel&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterResponseModel&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.newUser, newUser) || other.newUser == newUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,accessToken,refreshToken,user);
+int get hashCode => Object.hash(runtimeType,success,message,accessToken,refreshToken,newUser);
 
 @override
 String toString() {
-  return 'RegisterResponseModel(success: $success, message: $message, accessToken: $accessToken, refreshToken: $refreshToken, user: $user)';
+  return 'RegisterResponseModel(success: $success, message: $message, accessToken: $accessToken, refreshToken: $refreshToken, newUser: $newUser)';
 }
 
 
@@ -135,11 +135,11 @@ abstract mixin class _$RegisterResponseModelCopyWith<$Res> implements $RegisterR
   factory _$RegisterResponseModelCopyWith(_RegisterResponseModel value, $Res Function(_RegisterResponseModel) _then) = __$RegisterResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
- bool success, String message,@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String refreshToken, UserModel user
+ bool success, String message,@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String refreshToken, NewUserModel newUser
 });
 
 
-@override $UserModelCopyWith<$Res> get user;
+@override $NewUserModelCopyWith<$Res> get newUser;
 
 }
 /// @nodoc
@@ -152,14 +152,14 @@ class __$RegisterResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of RegisterResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? accessToken = null,Object? refreshToken = null,Object? user = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = null,Object? message = null,Object? accessToken = null,Object? refreshToken = null,Object? newUser = null,}) {
   return _then(_RegisterResponseModel(
 success: null == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
-as String,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserModel,
+as String,newUser: null == newUser ? _self.newUser : newUser // ignore: cast_nullable_to_non_nullable
+as NewUserModel,
   ));
 }
 
@@ -167,32 +167,32 @@ as UserModel,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserModelCopyWith<$Res> get user {
+$NewUserModelCopyWith<$Res> get newUser {
   
-  return $UserModelCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
+  return $NewUserModelCopyWith<$Res>(_self.newUser, (value) {
+    return _then(_self.copyWith(newUser: value));
   });
 }
 }
 
 
 /// @nodoc
-mixin _$UserModel {
+mixin _$NewUserModel {
 
  String get id; String get username; String get email;
-/// Create a copy of UserModel
+/// Create a copy of NewUserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>(this as UserModel, _$identity);
+$NewUserModelCopyWith<NewUserModel> get copyWith => _$NewUserModelCopyWithImpl<NewUserModel>(this as NewUserModel, _$identity);
 
-  /// Serializes this UserModel to a JSON map.
+  /// Serializes this NewUserModel to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewUserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -201,15 +201,15 @@ int get hashCode => Object.hash(runtimeType,id,username,email);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email)';
+  return 'NewUserModel(id: $id, username: $username, email: $email)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $UserModelCopyWith<$Res>  {
-  factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
+abstract mixin class $NewUserModelCopyWith<$Res>  {
+  factory $NewUserModelCopyWith(NewUserModel value, $Res Function(NewUserModel) _then) = _$NewUserModelCopyWithImpl;
 @useResult
 $Res call({
  String id, String username, String email
@@ -220,14 +220,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$UserModelCopyWithImpl<$Res>
-    implements $UserModelCopyWith<$Res> {
-  _$UserModelCopyWithImpl(this._self, this._then);
+class _$NewUserModelCopyWithImpl<$Res>
+    implements $NewUserModelCopyWith<$Res> {
+  _$NewUserModelCopyWithImpl(this._self, this._then);
 
-  final UserModel _self;
-  final $Res Function(UserModel) _then;
+  final NewUserModel _self;
+  final $Res Function(NewUserModel) _then;
 
-/// Create a copy of UserModel
+/// Create a copy of NewUserModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? email = null,}) {
   return _then(_self.copyWith(
@@ -244,28 +244,28 @@ as String,
 /// @nodoc
 @JsonSerializable()
 
-class _UserModel extends UserModel {
-  const _UserModel({required this.id, required this.username, required this.email}): super._();
-  factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+class _NewUserModel extends NewUserModel {
+  const _NewUserModel({required this.id, required this.username, required this.email}): super._();
+  factory _NewUserModel.fromJson(Map<String, dynamic> json) => _$NewUserModelFromJson(json);
 
 @override final  String id;
 @override final  String username;
 @override final  String email;
 
-/// Create a copy of UserModel
+/// Create a copy of NewUserModel
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UserModelCopyWith<_UserModel> get copyWith => __$UserModelCopyWithImpl<_UserModel>(this, _$identity);
+_$NewUserModelCopyWith<_NewUserModel> get copyWith => __$NewUserModelCopyWithImpl<_NewUserModel>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$UserModelToJson(this, );
+  return _$NewUserModelToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewUserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -274,15 +274,15 @@ int get hashCode => Object.hash(runtimeType,id,username,email);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email)';
+  return 'NewUserModel(id: $id, username: $username, email: $email)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
-  factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
+abstract mixin class _$NewUserModelCopyWith<$Res> implements $NewUserModelCopyWith<$Res> {
+  factory _$NewUserModelCopyWith(_NewUserModel value, $Res Function(_NewUserModel) _then) = __$NewUserModelCopyWithImpl;
 @override @useResult
 $Res call({
  String id, String username, String email
@@ -293,17 +293,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$UserModelCopyWithImpl<$Res>
-    implements _$UserModelCopyWith<$Res> {
-  __$UserModelCopyWithImpl(this._self, this._then);
+class __$NewUserModelCopyWithImpl<$Res>
+    implements _$NewUserModelCopyWith<$Res> {
+  __$NewUserModelCopyWithImpl(this._self, this._then);
 
-  final _UserModel _self;
-  final $Res Function(_UserModel) _then;
+  final _NewUserModel _self;
+  final $Res Function(_NewUserModel) _then;
 
-/// Create a copy of UserModel
+/// Create a copy of NewUserModel
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? email = null,}) {
-  return _then(_UserModel(
+  return _then(_NewUserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
