@@ -7,6 +7,7 @@ class StorageHelper {
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
+  static const String _userIdKey = 'user_id';
 
   // Device info box constants
   static const String _deviceInfoBoxName = 'device_info_box';
@@ -26,10 +27,12 @@ class StorageHelper {
   bool get isLoggedIn => _authBox.get(_isLoggedInKey) == 'true';
   String? get accessToken => _authBox.get(_accessTokenKey);
   String? get refreshToken => _authBox.get(_refreshTokenKey);
+  String? get userId => _authBox.get(_userIdKey);
   Future<void> setAuthData({
     required bool isLoggedIn,
     String? accessToken,
     String? refreshToken,
+    String? userId,
   }) async {
     await _authBox.put(_isLoggedInKey, isLoggedIn.toString());
     if (accessToken != null) {
@@ -38,12 +41,16 @@ class StorageHelper {
     if (refreshToken != null) {
       await _authBox.put(_refreshTokenKey, refreshToken);
     }
+    if (userId != null) {
+      await _authBox.put(_userIdKey, userId);
+    }
   }
   Future<void> clearAuthData() async {
     await _authBox.deleteAll([
       _isLoggedInKey,
       _accessTokenKey,
       _refreshTokenKey,
+      _userIdKey,
     ]);
   }
 

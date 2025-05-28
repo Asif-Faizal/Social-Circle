@@ -43,7 +43,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             if (!data.success || data.accessToken.isEmpty || data.refreshToken.isEmpty) {
               return RegisterState.error(data.message);
             }
-            storageHelper.setAuthData(isLoggedIn: true, accessToken: data.accessToken, refreshToken: data.refreshToken);
+            storageHelper.setAuthData(isLoggedIn: true, accessToken: data.accessToken, refreshToken: data.refreshToken, userId: data.newUser.id);
             return RegisterState.success(data);
           },
         ),
