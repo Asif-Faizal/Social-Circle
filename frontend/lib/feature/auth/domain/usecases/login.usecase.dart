@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
@@ -21,7 +22,7 @@ class LoginUseCase implements UseCase<LoginEntity, LoginParams> {
   }
 }
 
-class LoginParams {
+class LoginParams extends Equatable {
   final String email;
   final String password;
   final String deviceId;
@@ -33,4 +34,7 @@ class LoginParams {
     required this.deviceId,
     required this.deviceOs,
   });
+
+  @override
+  List<Object?> get props => [email, password, deviceId, deviceOs];
 } 
