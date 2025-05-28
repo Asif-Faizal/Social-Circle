@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:frontend/feature/auth/data/models/logout_request.model.dart';
 import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
 import '../models/check_email_response.model.dart';
@@ -24,7 +25,7 @@ abstract class AuthRemoteDataSource {
   Future<VerifyEmailOtpResponseModel> verifyEmailOtp(
       VerifyEmailOtpRequestModel request);
   Future<RegisterResponseModel> register(RegisterRequestModel request);
-  Future<LogoutResponseModel> logout();
+  Future<LogoutResponseModel> logout(LogoutRequestModel request);
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -309,15 +310,26 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<LogoutResponseModel> logout() async {
+  Future<LogoutResponseModel> logout(LogoutRequestModel request) async {
     try {
       // Check network connectivity before making the request
       await networkInfo.checkConnectivity();
 
-      final logoutRequest = LogoutDeviceRequest();
-
-      final response = await _client.logoutDevice(logoutRequest);
-
+      final response = await _client.logoutDevice(
+        LogoutDeviceRequest()
+          ..userId = request.userId
+          ..deviceId = request.deviceId,
+        options: CallOptions(
+          timeout: const Duration(seconds: 10),
+          metadata: {
+            'authorization': 'Bearer ${request.accessToken}',
+          },
+        ),
+      );
+      log("========================================REQUEST============================================");
+      log(request.toString());
+      log("========================================RESPONSE===========================================");
+      log(response.toString());
       return LogoutResponseModel(
         success: response.success,
         message: response.message,

@@ -17,6 +17,7 @@ class LogoutUsecase implements UseCase<LogoutEntity, LogoutParams> {
     return authRepository.logout(
       userId: params.userId,
       deviceId: params.deviceId,
+      accessToken: params.accessToken,
     );
   }
 }
@@ -24,9 +25,9 @@ class LogoutUsecase implements UseCase<LogoutEntity, LogoutParams> {
 class LogoutParams extends Equatable {
   final String userId;
   final String deviceId;
-
-  const LogoutParams({required this.userId, required this.deviceId});
+  final String accessToken;
+  const LogoutParams({required this.userId, required this.deviceId, required this.accessToken});
 
   @override
-  List<Object?> get props => [userId, deviceId];
+  List<Object?> get props => [userId, deviceId, accessToken];
 }

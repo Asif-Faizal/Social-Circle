@@ -9,6 +9,7 @@ import '../../domain/entities/verify_email_otp.entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 import '../models/login_request.model.dart';
+import '../models/logout_request.model.dart';
 import '../models/register_request.model.dart';
 import '../models/sent_email_otp_request.model.dart';
 import '../models/verify_email_otp_request.model.dart';
@@ -142,9 +143,15 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, LogoutEntity>> logout({
     required String userId,
     required String deviceId,
+    required String accessToken,
   }) async {
     try {
-      final result = await remoteDataSource.logout();
+      final request = LogoutRequestModel(
+        userId: userId,
+        deviceId: deviceId,
+        accessToken: accessToken,
+      );
+      final result = await remoteDataSource.logout(request);
       if (result.success == false) {
         return Left(ServerFailure(result.message));
       } else {

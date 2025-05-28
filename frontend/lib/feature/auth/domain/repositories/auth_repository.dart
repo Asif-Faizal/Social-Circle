@@ -36,5 +36,6 @@ abstract class AuthRepository {
   Future<Either<Failure, LogoutEntity>> logout({
     required String userId,
     required String deviceId,
+    required String accessToken,
   });
 }

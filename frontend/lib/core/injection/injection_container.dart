@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import '../../feature/auth/bloc/logout/logout_bloc.dart';
 import '../../feature/auth/bloc/register/register_bloc.dart';
 import '../../feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 import '../../feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
@@ -12,6 +13,7 @@ import '../../feature/auth/domain/usecases/check_email.usecase.dart';
 import '../../feature/auth/domain/usecases/login.usecase.dart';
 import '../../feature/auth/bloc/check_email/check_email_bloc.dart';
 import '../../feature/auth/bloc/login/login_bloc.dart';
+import '../../feature/auth/domain/usecases/logout.usecase.dart';
 import '../../feature/auth/domain/usecases/register.usecase.dart';
 import '../../feature/auth/domain/usecases/sent_email_otp.usecase.dart';
 import '../../feature/auth/domain/usecases/verify_email_otp.usecase.dart';
@@ -80,5 +82,9 @@ class DependencyInjection {
       () => RegisterBloc(registerUseCase: sl(), storageHelper: sl()),
     );
     sl.registerLazySingleton(() => RegisterUseCase(sl()));
+    sl.registerFactory(
+      () => LogoutBloc(logoutUsecase: sl(), storageHelper: sl()),
+    );
+    sl.registerLazySingleton(() => LogoutUsecase(sl()));
   }
 }

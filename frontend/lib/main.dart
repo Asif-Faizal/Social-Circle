@@ -11,6 +11,7 @@ import 'core/injection/injection_container.dart';
 import 'core/notification/data/firebase_options.dart';
 import 'core/storage/storage_helper.dart';
 import 'core/theme/app_themes.dart';
+import 'feature/auth/bloc/logout/logout_bloc.dart';
 import 'feature/auth/bloc/register/register_bloc.dart';
 import 'feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 import 'feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<RegisterBloc>(
           create: (_) => sl<RegisterBloc>(),
+        ),
+        BlocProvider<LogoutBloc>(
+          create: (_) => sl<LogoutBloc>(),
         ),
       ],
       child: MaterialApp(

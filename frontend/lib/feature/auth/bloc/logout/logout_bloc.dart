@@ -20,8 +20,9 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
       emit(const LogoutState.loading());
       final deviceId = storageHelper.deviceId;
       final userId = storageHelper.userId;
+      final accessToken = storageHelper.accessToken;
       final result = await logoutUsecase(
-        LogoutParams(userId: userId ?? '', deviceId: deviceId ?? ''),
+        LogoutParams(userId: userId ?? '', deviceId: deviceId ?? '', accessToken: accessToken ?? ''),
       );
 
       emit(

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LogoutRequestModel {
 
- String get userId; String get deviceId;
+ String get userId; String get deviceId; String get accessToken;
 /// Create a copy of LogoutRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $LogoutRequestModelCopyWith<LogoutRequestModel> get copyWith => _$LogoutRequestM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogoutRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,deviceId);
+int get hashCode => Object.hash(runtimeType,userId,deviceId,accessToken);
 
 @override
 String toString() {
-  return 'LogoutRequestModel(userId: $userId, deviceId: $deviceId)';
+  return 'LogoutRequestModel(userId: $userId, deviceId: $deviceId, accessToken: $accessToken)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $LogoutRequestModelCopyWith<$Res>  {
   factory $LogoutRequestModelCopyWith(LogoutRequestModel value, $Res Function(LogoutRequestModel) _then) = _$LogoutRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String userId, String deviceId
+ String userId, String deviceId, String accessToken
 });
 
 
@@ -66,10 +66,11 @@ class _$LogoutRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of LogoutRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? deviceId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? deviceId = null,Object? accessToken = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -81,11 +82,12 @@ as String,
 @JsonSerializable()
 
 class _LogoutRequestModel implements LogoutRequestModel {
-  const _LogoutRequestModel({required this.userId, required this.deviceId});
+  const _LogoutRequestModel({required this.userId, required this.deviceId, required this.accessToken});
   factory _LogoutRequestModel.fromJson(Map<String, dynamic> json) => _$LogoutRequestModelFromJson(json);
 
 @override final  String userId;
 @override final  String deviceId;
+@override final  String accessToken;
 
 /// Create a copy of LogoutRequestModel
 /// with the given fields replaced by the non-null parameter values.
@@ -100,16 +102,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LogoutRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LogoutRequestModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,deviceId);
+int get hashCode => Object.hash(runtimeType,userId,deviceId,accessToken);
 
 @override
 String toString() {
-  return 'LogoutRequestModel(userId: $userId, deviceId: $deviceId)';
+  return 'LogoutRequestModel(userId: $userId, deviceId: $deviceId, accessToken: $accessToken)';
 }
 
 
@@ -120,7 +122,7 @@ abstract mixin class _$LogoutRequestModelCopyWith<$Res> implements $LogoutReques
   factory _$LogoutRequestModelCopyWith(_LogoutRequestModel value, $Res Function(_LogoutRequestModel) _then) = __$LogoutRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String deviceId
+ String userId, String deviceId, String accessToken
 });
 
 
@@ -137,10 +139,11 @@ class __$LogoutRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of LogoutRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? deviceId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? deviceId = null,Object? accessToken = null,}) {
   return _then(_LogoutRequestModel(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,deviceId: null == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String,accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
