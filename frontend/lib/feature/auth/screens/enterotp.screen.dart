@@ -13,8 +13,8 @@ import '../../../core/widgets/success.snackbar.dart';
 import '../bloc/verify_email_otp/verify_email_otp_bloc.dart';
 import '../bloc/verify_email_otp/verify_email_otp_event.dart';
 import '../bloc/verify_email_otp/verify_email_otp_state.dart';
-import '../cubit/otp_cubit.dart';
-import '../cubit/otp_state.dart';
+import '../cubit/otp/otp_cubit.dart';
+import '../cubit/otp/otp_state.dart';
 
 class EnterOtpScreen extends StatelessWidget {
   const EnterOtpScreen({super.key, required this.args});

@@ -1,9 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import '../../feature/auth/bloc/register/register_bloc.dart';
 import '../../feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 import '../../feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
-import '../../feature/auth/cubit/otp_cubit.dart';
+import '../../feature/auth/cubit/otp/otp_cubit.dart';
 import '../../feature/auth/data/datasources/auth_remote_data_source.dart';
 import '../../feature/auth/data/repositories/auth_repository_impl.dart';
 import '../../feature/auth/domain/repositories/auth_repository.dart';
@@ -11,6 +12,7 @@ import '../../feature/auth/domain/usecases/check_email.usecase.dart';
 import '../../feature/auth/domain/usecases/login.usecase.dart';
 import '../../feature/auth/bloc/check_email/check_email_bloc.dart';
 import '../../feature/auth/bloc/login/login_bloc.dart';
+import '../../feature/auth/domain/usecases/register.usecase.dart';
 import '../../feature/auth/domain/usecases/sent_email_otp.usecase.dart';
 import '../../feature/auth/domain/usecases/verify_email_otp.usecase.dart';
 import '../../feature/splash/cubit/deviceInfo/device_info_cubit.dart';
@@ -74,5 +76,9 @@ class DependencyInjection {
       () => VerifyEmailOtpBloc(verifyEmailOtpUseCase: sl(), storageHelper: sl()),
     );
     sl.registerLazySingleton(() => VerifyEmailOtpUseCase(sl()));
+    sl.registerFactory(
+      () => RegisterBloc(registerUseCase: sl(), storageHelper: sl()),
+    );
+    sl.registerLazySingleton(() => RegisterUseCase(sl()));
   }
 }
