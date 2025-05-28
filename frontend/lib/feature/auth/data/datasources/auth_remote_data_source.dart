@@ -91,7 +91,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           LoginRequest()
             ..email = request.email
             ..password = request.password
-            ..deviceId = "1234567890"
+            ..deviceId = request.deviceId
             ..deviceOs = request.deviceOs;
 
       // Add timeout to gRPC call
