@@ -15,6 +15,7 @@ import 'feature/auth/bloc/logout/logout_bloc.dart';
 import 'feature/auth/bloc/register/register_bloc.dart';
 import 'feature/auth/bloc/sent_email_otp/sent_email_otp_bloc.dart';
 import 'feature/auth/bloc/verify_email_otp/verify_email_otp_bloc.dart';
+import 'feature/home/bloc/user_details/user_details_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LogoutBloc>(
           create: (_) => sl<LogoutBloc>(),
+        ),
+        BlocProvider<UserDetailsBloc>(
+          create: (_) => sl<UserDetailsBloc>(),
         ),
       ],
       child: MaterialApp(

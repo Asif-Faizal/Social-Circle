@@ -17,6 +17,11 @@ import '../../feature/auth/domain/usecases/logout.usecase.dart';
 import '../../feature/auth/domain/usecases/register.usecase.dart';
 import '../../feature/auth/domain/usecases/sent_email_otp.usecase.dart';
 import '../../feature/auth/domain/usecases/verify_email_otp.usecase.dart';
+import '../../feature/home/bloc/user_details/user_details_bloc.dart';
+import '../../feature/home/data/user.datasource.dart';
+import '../../feature/home/data/user.repo.impl.dart';
+import '../../feature/home/domain/usecases/user.details.dart';
+import '../../feature/home/domain/user.repo.dart';
 import '../../feature/splash/cubit/deviceInfo/device_info_cubit.dart';
 import '../../feature/splash/cubit/splash/splash_cubit.dart';
 import '../storage/storage_helper.dart';
@@ -86,5 +91,13 @@ class DependencyInjection {
       () => LogoutBloc(logoutUsecase: sl(), storageHelper: sl()),
     );
     sl.registerLazySingleton(() => LogoutUsecase(sl()));
+
+    // Home
+    sl.registerLazySingleton<UserDetailsRepo>(() => UserRepoImpl(userDataSource: sl()));
+    sl.registerLazySingleton(() => UserDetailsUsecase(sl()));
+    sl.registerFactory(
+      () => UserDetailsBloc(userDetailsUsecase: sl(), storageHelper: sl()),
+    );
+    sl.registerLazySingleton<UserDataSource>(() => UserDataSourceImpl(channel: sl(), networkInfo: sl()));
   }
 }
