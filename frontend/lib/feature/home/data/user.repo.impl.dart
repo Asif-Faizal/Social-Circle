@@ -4,10 +4,18 @@ import 'package:frontend/feature/home/domain/entities/user.entity.dart';
 import 'package:frontend/core/error/failures.dart';
 
 import '../domain/user.repo.dart';
+import 'user.datasource.dart';
+
 class UserRepoImpl extends UserDetailsRepo {
+  final UserDataSource userDataSource;
+  UserRepoImpl({required this.userDataSource});
   @override
-  Future<Either<Failure, UserEntity>> getUserDetails(UserRequestModel request) {
-    // TODO: implement getUserDetails
-    throw UnimplementedError();
+  Future<Either<Failure, UserEntity>> getUserDetails(UserRequestModel request) async {
+    try {
+      final result = await userDataSource.getUserDetails(request);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 }

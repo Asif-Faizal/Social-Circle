@@ -323,3 +323,27 @@ final $typed_data.Uint8List checkEmailResponseDescriptor = $convert.base64Decode
     'ChJDaGVja0VtYWlsUmVzcG9uc2USGAoHc3VjY2VzcxgBIAEoCFIHc3VjY2VzcxIYCgdtZXNzYW'
     'dlGAIgASgJUgdtZXNzYWdlEiMKDWlzX3JlZ2lzdGVyZWQYAyABKAhSDGlzUmVnaXN0ZXJlZA==');
 
+@$core.Deprecated('Use getUserInfoRequestDescriptor instead')
+const GetUserInfoRequest$json = {
+  '1': 'GetUserInfoRequest',
+};
+
+/// Descriptor for `GetUserInfoRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getUserInfoRequestDescriptor = $convert.base64Decode(
+    'ChJHZXRVc2VySW5mb1JlcXVlc3Q=');
+
+@$core.Deprecated('Use getUserInfoResponseDescriptor instead')
+const GetUserInfoResponse$json = {
+  '1': 'GetUserInfoResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+    {'1': 'user', '3': 3, '4': 1, '5': 11, '6': '.user.User', '10': 'user'},
+  ],
+};
+
+/// Descriptor for `GetUserInfoResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getUserInfoResponseDescriptor = $convert.base64Decode(
+    'ChNHZXRVc2VySW5mb1Jlc3BvbnNlEhgKB3N1Y2Nlc3MYASABKAhSB3N1Y2Nlc3MSGAoHbWVzc2'
+    'FnZRgCIAEoCVIHbWVzc2FnZRIeCgR1c2VyGAMgASgLMgoudXNlci5Vc2VyUgR1c2Vy');
+

@@ -61,6 +61,10 @@ class UserServiceClient extends $grpc.Client {
       '/user.UserService/RefreshToken',
       ($0.RefreshTokenRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.RefreshTokenResponse.fromBuffer(value));
+  static final _$getUserInfo = $grpc.ClientMethod<$0.GetUserInfoRequest, $0.GetUserInfoResponse>(
+      '/user.UserService/GetUserInfo',
+      ($0.GetUserInfoRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.GetUserInfoResponse.fromBuffer(value));
   static final _$checkEmail = $grpc.ClientMethod<$0.CheckEmailRequest, $0.CheckEmailResponse>(
       '/user.UserService/CheckEmail',
       ($0.CheckEmailRequest value) => value.writeToBuffer(),
@@ -98,6 +102,10 @@ class UserServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.RefreshTokenResponse> refreshToken($0.RefreshTokenRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$refreshToken, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetUserInfoResponse> getUserInfo($0.GetUserInfoRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getUserInfo, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.CheckEmailResponse> checkEmail($0.CheckEmailRequest request, {$grpc.CallOptions? options}) {
@@ -166,6 +174,13 @@ abstract class UserServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.RefreshTokenRequest.fromBuffer(value),
         ($0.RefreshTokenResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetUserInfoRequest, $0.GetUserInfoResponse>(
+        'GetUserInfo',
+        getUserInfo_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.GetUserInfoRequest.fromBuffer(value),
+        ($0.GetUserInfoResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.CheckEmailRequest, $0.CheckEmailResponse>(
         'CheckEmail',
         checkEmail_Pre,
@@ -207,6 +222,10 @@ abstract class UserServiceBase extends $grpc.Service {
     return refreshToken($call, await $request);
   }
 
+  $async.Future<$0.GetUserInfoResponse> getUserInfo_Pre($grpc.ServiceCall $call, $async.Future<$0.GetUserInfoRequest> $request) async {
+    return getUserInfo($call, await $request);
+  }
+
   $async.Future<$0.CheckEmailResponse> checkEmail_Pre($grpc.ServiceCall $call, $async.Future<$0.CheckEmailRequest> $request) async {
     return checkEmail($call, await $request);
   }
@@ -219,5 +238,6 @@ abstract class UserServiceBase extends $grpc.Service {
   $async.Future<$0.LogoutDeviceResponse> logoutDevice($grpc.ServiceCall call, $0.LogoutDeviceRequest request);
   $async.Future<$0.LogoutAllDevicesResponse> logoutAllDevices($grpc.ServiceCall call, $0.LogoutAllDevicesRequest request);
   $async.Future<$0.RefreshTokenResponse> refreshToken($grpc.ServiceCall call, $0.RefreshTokenRequest request);
+  $async.Future<$0.GetUserInfoResponse> getUserInfo($grpc.ServiceCall call, $0.GetUserInfoRequest request);
   $async.Future<$0.CheckEmailResponse> checkEmail($grpc.ServiceCall call, $0.CheckEmailRequest request);
 }
