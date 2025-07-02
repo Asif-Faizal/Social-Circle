@@ -51,6 +51,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         userId1: userId1,
         userId2: userId2,
         pageSize: 50, // Or make this configurable
+        pageNumber: 1, // Start from page 1
       );
       final response = await _client.getChatHistory(request);
       return response.messages;

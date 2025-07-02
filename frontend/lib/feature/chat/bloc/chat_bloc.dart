@@ -50,7 +50,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             ),
           ),
         );
-        emit(const ChatState.connected(messages: []));
+        emit(const ChatState.connected(messages: [], isLoadingHistory: true));
         add(ChatEvent.loadHistory(selfId: event.selfId, peerId: event.peerId));
       },
     );
@@ -71,7 +71,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       if (connected.messages != null) {
         final updatedMessages = List<ChatMessageEntity>.from(connected.messages)
           ..add(event.message);
-        emit(ChatState.connected(messages: updatedMessages));
+        emit(ChatState.connected(
+          messages: updatedMessages, 
+          isLoadingHistory: connected.isLoadingHistory ?? false,
+        ));
       } 
     }
   }
@@ -89,7 +92,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             final allMessages = [...history, ...connected.messages]
               ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
             emit(ChatState.connected(
-                messages: allMessages.cast<ChatMessageEntity>().toList()));
+              messages: allMessages.cast<ChatMessageEntity>().toList(),
+              isLoadingHistory: false, // History loading completed
+            ));
           }
         }
       },

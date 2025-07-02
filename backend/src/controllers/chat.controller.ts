@@ -49,6 +49,13 @@ export class ChatController {
     try {
       const { user_id_1, user_id_2, page_size = 20, page_number = 1 } = call.request;
 
+      // Validate and sanitize pagination parameters
+      const safePageSize = Math.max(1, Math.min(page_size || 20, 100)); // Between 1 and 100
+      const safePageNumber = Math.max(1, page_number || 1); // At least 1
+      const skipCount = Math.max(0, (safePageNumber - 1) * safePageSize); // Ensure non-negative
+
+      console.log(`GetChatHistory: page_size=${page_size}, page_number=${page_number}, safePageSize=${safePageSize}, safePageNumber=${safePageNumber}, skipCount=${skipCount}`);
+
       const messages = await ChatMessageModel.find({
         $or: [
           { senderId: user_id_1, receiverId: user_id_2 },
@@ -56,19 +63,23 @@ export class ChatController {
         ],
       })
       .sort({ timestamp: -1 })
-      .skip((page_number - 1) * page_size)
-      .limit(page_size)
-      .populate('senderId')
-      .populate('receiverId');
+      .skip(skipCount)
+      .limit(safePageSize);
+      // Removed .populate() to keep consistent ObjectId strings
 
       const chatMessages: ChatMessage[] = messages.map(msg => ({
         id: (msg._id as any).toString(),
-        sender_id: msg.senderId.toString(),
-        receiver_id: msg.receiverId.toString(),
+        sender_id: (msg.senderId as any).toString(),
+        receiver_id: (msg.receiverId as any).toString(),
         content: msg.content,
         timestamp_ms: msg.timestamp.getTime(),
         status: msg.status as 'SENT' | 'DELIVERED' | 'READ',
       }));
+
+      console.log(`GetChatHistory returning ${chatMessages.length} messages`);
+      chatMessages.forEach((msg, index) => {
+        console.log(`Message ${index}: sender_id="${msg.sender_id}", receiver_id="${msg.receiver_id}", content="${msg.content}"`);
+      });
 
       callback(null, { messages: chatMessages });
     } catch (error) {

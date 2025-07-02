@@ -110,7 +110,7 @@ String toString() {
 
 
 class _Connected implements ChatState {
-  const _Connected({required final  List<ChatMessageEntity> messages}): _messages = messages;
+  const _Connected({required final  List<ChatMessageEntity> messages, this.isLoadingHistory = false}): _messages = messages;
   
 
  final  List<ChatMessageEntity> _messages;
@@ -120,6 +120,7 @@ class _Connected implements ChatState {
   return EqualUnmodifiableListView(_messages);
 }
 
+@JsonKey() final  bool isLoadingHistory;
 
 /// Create a copy of ChatState
 /// with the given fields replaced by the non-null parameter values.
@@ -131,16 +132,16 @@ _$ConnectedCopyWith<_Connected> get copyWith => __$ConnectedCopyWithImpl<_Connec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Connected&&const DeepCollectionEquality().equals(other._messages, _messages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Connected&&const DeepCollectionEquality().equals(other._messages, _messages)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages),isLoadingHistory);
 
 @override
 String toString() {
-  return 'ChatState.connected(messages: $messages)';
+  return 'ChatState.connected(messages: $messages, isLoadingHistory: $isLoadingHistory)';
 }
 
 
@@ -151,7 +152,7 @@ abstract mixin class _$ConnectedCopyWith<$Res> implements $ChatStateCopyWith<$Re
   factory _$ConnectedCopyWith(_Connected value, $Res Function(_Connected) _then) = __$ConnectedCopyWithImpl;
 @useResult
 $Res call({
- List<ChatMessageEntity> messages
+ List<ChatMessageEntity> messages, bool isLoadingHistory
 });
 
 
@@ -168,10 +169,11 @@ class __$ConnectedCopyWithImpl<$Res>
 
 /// Create a copy of ChatState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? messages = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? messages = null,Object? isLoadingHistory = null,}) {
   return _then(_Connected(
 messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
-as List<ChatMessageEntity>,
+as List<ChatMessageEntity>,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : isLoadingHistory // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

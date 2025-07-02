@@ -33,7 +33,12 @@ class RouteGenerator {
       case RoutingConstants.accountInfoScreen:
         return _buildRoute(const AccountInfoScreen(), settings);
       case RoutingConstants.chatScreen:
-        final chatArgs = settings.arguments as Map<String, dynamic>;
+        final chatArgs = settings.arguments as Map<String, dynamic>?;
+        if (chatArgs == null) {
+          print('Error: No arguments provided for chat screen');
+          return _errorRoute('Missing chat arguments', context);
+        }
+        print('Chat screen arguments: $chatArgs');
         return _buildRoute(ChatScreen(
           selfId: chatArgs['selfId'],
           peerId: chatArgs['peerId'],

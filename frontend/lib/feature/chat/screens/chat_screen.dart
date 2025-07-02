@@ -26,12 +26,15 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
+  ChatBloc? _chatBloc;
 
   @override
   void initState() {
     super.initState();
+    // Store reference to the bloc for safe disposal
+    _chatBloc = context.read<ChatBloc>();
     // Connect to the chat stream when the screen is initialized
-    context.read<ChatBloc>().add(ChatEvent.connect(
+    _chatBloc!.add(ChatEvent.connect(
           selfId: widget.selfId,
           peerId: widget.peerId,
         ));
@@ -40,7 +43,12 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     // Disconnect from the chat stream when the screen is disposed
-    context.read<ChatBloc>().add(const ChatEvent.disconnect());
+    // Use stored reference instead of accessing context
+    try {
+      _chatBloc?.add(const ChatEvent.disconnect());
+    } catch (e) {
+      print('Error disconnecting chat: $e');
+    }
     _messageController.dispose();
     super.dispose();
   }
@@ -67,21 +75,99 @@ class _ChatScreenState extends State<ChatScreen> {
                 final stateTypeName = state.runtimeType.toString();
                 
                 if (stateTypeName.contains('Connecting')) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text("Connecting to chat..."),
+                      ],
+                    ),
+                  );
                 }
                 
                 if (stateTypeName.contains('Connected')) {
                   final connected = state as dynamic;
                   final messages = connected.messages as List<ChatMessageEntity>? ?? [];
-                  if (messages.isEmpty) {
-                    return const Center(child: Text("No messages yet. Say hi!"));
+                  final isLoadingHistory = connected.isLoadingHistory as bool? ?? false;
+                  
+                  // Show loading placeholder while chat history is being loaded
+                  if (isLoadingHistory && messages.isEmpty) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text("Loading chat history..."),
+                        ],
+                      ),
+                    );
                   }
+                  
+                  // Show empty state when history is loaded but no messages exist
+                  if (!isLoadingHistory && messages.isEmpty) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            "No messages yet. Say hi!",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  
                   return ListView.builder(
                     reverse: true, // To show the latest messages at the bottom
-                    itemCount: messages.length,
+                    itemCount: messages.length + (isLoadingHistory ? 1 : 0),
                     itemBuilder: (context, index) {
+                      // Show loading indicator at the top (last item when reversed)
+                      if (isLoadingHistory && index == messages.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Loading older messages...",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      
                       final message = messages[messages.length - 1 - index];
                       final isMe = message.senderId == widget.selfId;
+                      
+                      // Debug print to check sender ID comparison
+                      print('Message: "${message.content}"');
+                      print('Message senderId: "${message.senderId}"');
+                      print('Widget selfId: "${widget.selfId}"');
+                      print('IsMe: $isMe');
+                      print('---');
+                      
                       return _buildMessageBubble(message, isMe);
                     },
                   );
@@ -154,7 +240,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendMessage() {
     final message = _messageController.text.trim();
     if (message.isNotEmpty) {
-      context.read<ChatBloc>().add(ChatEvent.sendMessage(message: message));
+      _chatBloc?.add(ChatEvent.sendMessage(message: message));
       _messageController.clear();
     }
   }

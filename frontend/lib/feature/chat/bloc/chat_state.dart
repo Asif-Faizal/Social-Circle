@@ -7,7 +7,10 @@ part 'chat_state.freezed.dart';
 class ChatState with _$ChatState {
   const factory ChatState.initial() = _Initial;
   const factory ChatState.connecting() = _Connecting;
-  const factory ChatState.connected({required List<ChatMessageEntity> messages}) = _Connected;
+  const factory ChatState.connected({
+    required List<ChatMessageEntity> messages,
+    @Default(false) bool isLoadingHistory,
+  }) = _Connected;
   const factory ChatState.disconnected() = _Disconnected;
   const factory ChatState.error({required String message}) = _Error;
 } 
