@@ -13,6 +13,7 @@ service UserService {
   rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
   rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
   rpc CheckEmail (CheckEmailRequest) returns (CheckEmailResponse);
+  rpc GetAllUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
 }
 
 message RegisterRequest {
@@ -143,4 +144,13 @@ message GetUserInfoResponse {
   bool success = 1;
   string message = 2;
   User user = 3;
+}
+
+message GetAllUsersRequest {
+}
+
+message GetAllUsersResponse {
+  bool success = 1;
+  string message = 2;
+  repeated User users = 3;
 } 

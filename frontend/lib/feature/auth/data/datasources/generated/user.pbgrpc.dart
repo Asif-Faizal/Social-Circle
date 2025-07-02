@@ -69,6 +69,10 @@ class UserServiceClient extends $grpc.Client {
       '/user.UserService/CheckEmail',
       ($0.CheckEmailRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.CheckEmailResponse.fromBuffer(value));
+  static final _$getAllUsers = $grpc.ClientMethod<$0.GetAllUsersRequest, $0.GetAllUsersResponse>(
+      '/user.UserService/GetAllUsers',
+      ($0.GetAllUsersRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.GetAllUsersResponse.fromBuffer(value));
 
   UserServiceClient(super.channel, {super.options, super.interceptors});
 
@@ -110,6 +114,10 @@ class UserServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.CheckEmailResponse> checkEmail($0.CheckEmailRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$checkEmail, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.GetAllUsersResponse> getAllUsers($0.GetAllUsersRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getAllUsers, request, options: options);
   }
 }
 
@@ -188,6 +196,13 @@ abstract class UserServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.CheckEmailRequest.fromBuffer(value),
         ($0.CheckEmailResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetAllUsersRequest, $0.GetAllUsersResponse>(
+        'GetAllUsers',
+        getAllUsers_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.GetAllUsersRequest.fromBuffer(value),
+        ($0.GetAllUsersResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.RegisterResponse> register_Pre($grpc.ServiceCall $call, $async.Future<$0.RegisterRequest> $request) async {
@@ -230,6 +245,10 @@ abstract class UserServiceBase extends $grpc.Service {
     return checkEmail($call, await $request);
   }
 
+  $async.Future<$0.GetAllUsersResponse> getAllUsers_Pre($grpc.ServiceCall $call, $async.Future<$0.GetAllUsersRequest> $request) async {
+    return getAllUsers($call, await $request);
+  }
+
   $async.Future<$0.RegisterResponse> register($grpc.ServiceCall call, $0.RegisterRequest request);
   $async.Future<$0.LoginResponse> login($grpc.ServiceCall call, $0.LoginRequest request);
   $async.Future<$0.SendOTPResponse> sendOTP($grpc.ServiceCall call, $0.SendOTPRequest request);
@@ -240,4 +259,5 @@ abstract class UserServiceBase extends $grpc.Service {
   $async.Future<$0.RefreshTokenResponse> refreshToken($grpc.ServiceCall call, $0.RefreshTokenRequest request);
   $async.Future<$0.GetUserInfoResponse> getUserInfo($grpc.ServiceCall call, $0.GetUserInfoRequest request);
   $async.Future<$0.CheckEmailResponse> checkEmail($grpc.ServiceCall call, $0.CheckEmailRequest request);
+  $async.Future<$0.GetAllUsersResponse> getAllUsers($grpc.ServiceCall call, $0.GetAllUsersRequest request);
 }

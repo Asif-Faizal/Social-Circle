@@ -7,6 +7,7 @@ import '../../feature/home/screens/home.screen.dart';
 import '../../feature/splash/screens/initial.screen.dart';
 import '../../feature/splash/screens/splash.screen.dart';
 import '../../feature/auth/screens/notregistered.screen.dart';
+import '../../feature/chat/screens/chat_screen.dart';
 import 'routing_arguments.dart';
 import 'routing_contants.dart';
 
@@ -31,6 +32,14 @@ class RouteGenerator {
         return _buildRoute(const HomeScreen(), settings);
       case RoutingConstants.accountInfoScreen:
         return _buildRoute(const AccountInfoScreen(), settings);
+      case RoutingConstants.chatScreen:
+        final chatArgs = settings.arguments as Map<String, dynamic>;
+        return _buildRoute(ChatScreen(
+          selfId: chatArgs['selfId'],
+          peerId: chatArgs['peerId'],
+          peerName: chatArgs['peerName'],
+          peerImageUrl: chatArgs['peerImageUrl'],
+        ), settings);
       default:
         return _errorRoute('No route found', context);
     }

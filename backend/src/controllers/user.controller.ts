@@ -116,6 +116,20 @@ interface GetUserInfoResponse {
   };
 }
 
+interface GetAllUsersRequest {
+  // No fields needed
+}
+
+interface GetAllUsersResponse {
+  success: boolean;
+  message: string;
+  users: {
+    id: string;
+    username: string;
+    email: string;
+  }[];
+}
+
 export class UserController {
   private userService: UserService;
 
@@ -582,6 +596,39 @@ export class UserController {
       });
     } catch (error: any) {
       console.error('Error in getUserInfo controller:', error);
+      callback({
+        code: error.code || status.INTERNAL,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  async getAllUsers(
+    call: ServerUnaryCall<GetAllUsersRequest, GetAllUsersResponse>,
+    callback: sendUnaryData<GetAllUsersResponse>
+  ): Promise<void> {
+    try {
+      // Authenticate request
+      const auth = authenticate(call);
+
+      const result = await this.userService.getAllUsers();
+
+      if (!result.success) {
+        callback(null, {
+          success: false,
+          message: result.message,
+          users: [],
+        });
+        return;
+      }
+
+      callback(null, {
+        success: true,
+        message: result.message,
+        users: result.users || [],
+      });
+    } catch (error: any) {
+      console.error('Error in getAllUsers controller:', error);
       callback({
         code: error.code || status.INTERNAL,
         message: error.message || 'Internal server error',

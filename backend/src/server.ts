@@ -61,7 +61,8 @@ async function startServer() {
       LogoutAllDevices: userRoutes.logoutAllDevices,
       RefreshToken: userRoutes.refreshToken,
       GetUserInfo: userRoutes.getUserInfo,
-      CheckEmail: userRoutes.checkEmail
+      CheckEmail: userRoutes.checkEmail,
+      GetAllUsers: userRoutes.getAllUsers
     });
 
     // Add chat service

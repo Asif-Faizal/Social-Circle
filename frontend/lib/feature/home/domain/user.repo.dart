@@ -5,4 +5,5 @@ import 'package:frontend/feature/home/domain/entities/user.entity.dart';
 import '../../../core/error/failures.dart';
 abstract class UserDetailsRepo {
   Future<Either<Failure, UserEntity>> getUserDetails(UserRequestModel request);
+  Future<Either<Failure, List<UserEntity>>> getAllUsers(String deviceId, String accessToken);
 }

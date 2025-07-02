@@ -7,190 +7,426 @@ import '../../../core/routing/routing_contants.dart';
 import '../../auth/bloc/logout/logout_bloc.dart';
 import '../../auth/bloc/logout/logout_event.dart';
 import '../../auth/bloc/logout/logout_state.dart';
-import '../widgets/chat.tile.dart';
+import '../bloc/all_users/all_users_bloc.dart';
+import '../bloc/all_users/all_users_event.dart';
+import '../bloc/all_users/all_users_state.dart';
+import '../bloc/user_details/user_details_bloc.dart';
+import '../bloc/user_details/user_details_event.dart';
+import '../bloc/user_details/user_details_state.dart';
+import '../domain/entities/user.entity.dart';
 import '../widgets/home.drawer.dart';
-import '../widgets/online.chat.card.dart';
 
-class _OnlineListDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    // Calculate the current height ensuring it stays within the allowed range.
-    // Using a direct linear relation between shrinkOffset and height prevents
-    // tiny floating-point rounding errors that can make layoutExtent slightly
-    // larger than paintExtent (see Flutter issue #111906).
-    final height = (maxExtent - shrinkOffset).clamp(minExtent, maxExtent);
-
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      height: height,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return OnlineChatCard(
-            name: 'John Cena',
-            imageUrl:
-                'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 160.0;
-
-  @override
-  double get minExtent => 50.0;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
-}
-
-class _ChatHeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      height: maxExtent,
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        // Add a subtle gradient at the top to blend with the list
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Theme.of(context).scaffoldBackgroundColor,
-            Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.9),
-            Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.01),
-          ],
-          stops: const [0.0, 0.8, 1.0],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Text('Chats', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 5),
-            Divider(height: 1, thickness: 0.2),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 55.0;
-
-  @override
-  double get minExtent => 55.0;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
-}
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  UserEntity? currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load current user details and all users
+    context.read<UserDetailsBloc>().add(const UserDetailsEvent.getUserDetails());
+    context.read<AllUsersBloc>().add(const AllUsersEvent.getAllUsers());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
+        title: const Text('Social Circle'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+          IconButton(
+            onPressed: () {
+              // Refresh users list
+              context.read<AllUsersBloc>().add(const AllUsersEvent.getAllUsers());
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+          const SizedBox(width: 8),
         ],
         leading: Builder(
-          builder:
-              (context) => IconButton(
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                icon: const Icon(Icons.menu),
-              ),
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: const Icon(Icons.menu),
+          ),
         ),
       ),
-      drawer: HomeDrawer(
-        name: 'John Cena',
-        email: 'john.cena@gmail.com',
-        imageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
-        onEditProfile: () {},
-        onSettings: () {},
-        onLogout: () async {
-          context.read<LogoutBloc>().add(LogoutEvent.logout());
-          NavigationService().goBack();
-        },
-        onAccount: () {
-          NavigationService().navigateTo(RoutingConstants.accountInfoScreen);
-        },
-      ),
-      body: BlocListener<LogoutBloc, LogoutState>(
-        listener: (context, state) {
-          state.maybeWhen(
-            orElse: () {},
-            success: (data) {
-              NavigationService().navigateToAndRemoveUntil(
-                RoutingConstants.initialScreen,
-              );
-            },
-            error: (error) {
-              showErrorSnackBar(context, error);
-            },
-            networkError: (error) {
-              showNetworkSnackBar(context, error,(){
+      drawer: BlocBuilder<UserDetailsBloc, UserDetailsState>(
+        builder: (context, userState) {
+          final stateTypeName = userState.runtimeType.toString();
+          
+          if (stateTypeName.contains('Success')) {
+            final success = userState as dynamic;
+            final user = success.user;
+            currentUser = user;
+            return HomeDrawer(
+              name: user.name,
+              email: user.email,
+              imageUrl: 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name)}&background=6366f1&color=fff&size=200',
+              onEditProfile: () {},
+              onSettings: () {},
+              onLogout: () async {
                 context.read<LogoutBloc>().add(LogoutEvent.logout());
                 NavigationService().goBack();
-              });
+              },
+              onAccount: () {
+                NavigationService().navigateTo(RoutingConstants.accountInfoScreen);
+              },
+            );
+          } else if (stateTypeName.contains('Error')) {
+            final error = stateTypeName.contains('NetworkError') ? 'Network Error' : 'Error';
+            return HomeDrawer(
+              name: error,
+              email: 'Please try again',
+              imageUrl: '',
+              onEditProfile: () {},
+              onSettings: () {},
+              onLogout: () async {
+                context.read<LogoutBloc>().add(LogoutEvent.logout());
+                NavigationService().goBack();
+              },
+              onAccount: () {
+                NavigationService().navigateTo(RoutingConstants.accountInfoScreen);
+              },
+            );
+          }
+          
+          // Default loading state
+          return HomeDrawer(
+            name: 'Loading...',
+            email: 'Loading...',
+            imageUrl: '',
+            onEditProfile: () {},
+            onSettings: () {},
+            onLogout: () async {
+              context.read<LogoutBloc>().add(LogoutEvent.logout());
+              NavigationService().goBack();
+            },
+            onAccount: () {
+              NavigationService().navigateTo(RoutingConstants.accountInfoScreen);
             },
           );
         },
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _OnlineListDelegate(),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _ChatHeaderDelegate(),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return ChatTile(
-                    name: 'John Cena',
-                    imageUrl:
-                        'https://upload.wikimedia.org/wikipedia/commons/f/f1/John_Cena_on_the_Impaulsive_podcast%2C_2024.png',
-                    lastMessage: 'Hello',
-                    lastMessageTime: '12:00',
-                    unreadMessageCount: 2,
-                    isOnline: true,
-                    lastMessageStatus: 'sent',
+      ),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<LogoutBloc, LogoutState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                orElse: () {},
+                success: (data) {
+                  NavigationService().navigateToAndRemoveUntil(
+                    RoutingConstants.initialScreen,
                   );
-                }, childCount: 20),
-              ),
+                },
+                error: (error) {
+                  showErrorSnackBar(context, error);
+                },
+                networkError: (error) {
+                  showNetworkSnackBar(context, error, () {
+                    context.read<LogoutBloc>().add(LogoutEvent.logout());
+                    NavigationService().goBack();
+                  });
+                },
+              );
+            },
+          ),
+          BlocListener<AllUsersBloc, AllUsersState>(
+            listener: (context, state) {
+              final stateTypeName = state.runtimeType.toString();
+              if (stateTypeName.contains('Error')) {
+                final errorState = state as dynamic;
+                final message = errorState.message ?? 'Unknown error';
+                if (stateTypeName.contains('NetworkError')) {
+                  showNetworkSnackBar(context, message, () {
+                    context.read<AllUsersBloc>().add(const AllUsersEvent.getAllUsers());
+                  });
+                } else {
+                  showErrorSnackBar(context, message);
+                }
+              }
+            },
+          ),
+        ],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                Colors.white,
+              ],
+              stops: const [0.0, 0.3, 1.0],
             ),
-          ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Welcome to Social Circle!',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Select a user to start chatting',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                    ),
+                  ),
+                                     child: BlocBuilder<AllUsersBloc, AllUsersState>(
+                     builder: (context, state) {
+                       final stateTypeName = state.runtimeType.toString();
+                       
+                       if (stateTypeName.contains('Initial')) {
+                         return const Center(
+                           child: Text('Getting ready...'),
+                         );
+                       }
+                       
+                       if (stateTypeName.contains('Loading')) {
+                         return const Center(
+                           child: Column(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               CircularProgressIndicator(),
+                               SizedBox(height: 16),
+                               Text('Loading users...'),
+                             ],
+                           ),
+                         );
+                       }
+                       
+                       if (stateTypeName.contains('Success')) {
+                         final successState = state as dynamic;
+                         final users = successState.users as List<UserEntity>;
+                          if (users.isEmpty) {
+                            return const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.people_outline,
+                                    size: 64,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'No other users found',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          // Filter out current user from the list
+                          final otherUsers = users.where((user) => 
+                            currentUser == null || user.id != currentUser!.id
+                          ).toList();
+
+                          if (otherUsers.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.people_outline,
+                                    size: 64,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    currentUser == null 
+                                        ? 'Loading user information...' 
+                                        : 'You are the only user',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  if (currentUser != null) ...[
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      'Invite friends to join Social Circle!',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Users (${otherUsers.length})',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: otherUsers.length,
+                                    itemBuilder: (context, index) {
+                                      final user = otherUsers[index];
+                                      return Card(
+                                        margin: const EdgeInsets.only(bottom: 8),
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: ListTile(
+                                          contentPadding: const EdgeInsets.all(16),
+                                          leading: CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage: NetworkImage(
+                                              'https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name)}&background=6366f1&color=fff&size=200',
+                                            ),
+                                          ),
+                                          title: Text(
+                                            user.name,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            user.email,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          trailing: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).primaryColor,
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: const Text(
+                                              'Chat',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            if (mounted && currentUser != null) {
+                                              NavigationService().navigateTo(
+                                                RoutingConstants.chatScreen,
+                                                arguments: {
+                                                  'selfId': currentUser!.id,
+                                                  'peerId': user.id,
+                                                  'peerName': user.name,
+                                                  'peerImageUrl': 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(user.name)}&background=6366f1&color=fff&size=200',
+                                                },
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        
+                        if (stateTypeName.contains('Error')) {
+                          final errorState = state as dynamic;
+                          final message = errorState.message ?? 'Unknown error';
+                          final isNetworkError = stateTypeName.contains('NetworkError');
+                          
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  isNetworkError ? Icons.wifi_off : Icons.error_outline,
+                                  size: 64,
+                                  color: isNetworkError ? Colors.orange : Colors.red,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  '${isNetworkError ? 'Network Error' : 'Error'}: $message',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isNetworkError ? Colors.orange : Colors.red,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<AllUsersBloc>().add(const AllUsersEvent.getAllUsers());
+                                  },
+                                  child: const Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        
+                        // Default fallback
+                        return const Center(
+                          child: Text('Unknown state'),
+                        );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

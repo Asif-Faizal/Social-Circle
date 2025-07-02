@@ -113,6 +113,19 @@ interface GetUserInfoResponse {
   };
 }
 
+interface GetAllUsersRequest {
+}
+
+interface GetAllUsersResponse {
+  success: boolean;
+  message: string;
+  users: Array<{
+    id: string;
+    username: string;
+    email: string;
+  }>;
+}
+
 // Initialize controller
 const userController = new UserController();
 
@@ -205,5 +218,13 @@ export const userRoutes = {
     callback: sendUnaryData<GetUserInfoResponse>
   ): Promise<void> => {
     await userController.getUserInfo(call, callback);
+  },
+
+  // Get all users handler
+  getAllUsers: async (
+    call: ServerUnaryCall<GetAllUsersRequest, GetAllUsersResponse>,
+    callback: sendUnaryData<GetAllUsersResponse>
+  ): Promise<void> => {
+    await userController.getAllUsers(call, callback);
   }
 }; 

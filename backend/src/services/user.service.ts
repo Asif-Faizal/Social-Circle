@@ -111,6 +111,16 @@ export interface GetUserInfoOutput {
   };
 }
 
+export interface GetAllUsersOutput {
+  success: boolean;
+  message: string;
+  users?: {
+    id: string;
+    username: string;
+    email: string;
+  }[];
+}
+
 export class UserService {
   private deviceSessionService: DeviceSessionService;
 
@@ -524,6 +534,39 @@ export class UserService {
       return {
         success: false,
         message: 'Error getting user info',
+      };
+    }
+  }
+
+  async getAllUsers(): Promise<GetAllUsersOutput> {
+    try {
+      // Fetch all users from database, excluding sensitive information
+      const users = await User.find({}, 'id username email').exec();
+
+      if (!users || users.length === 0) {
+        return {
+          success: true,
+          message: 'No users found',
+          users: [],
+        };
+      }
+
+      const userList = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      }));
+
+      return {
+        success: true,
+        message: 'Users retrieved successfully',
+        users: userList,
+      };
+    } catch (error) {
+      console.error('Error getting all users:', error);
+      return {
+        success: false,
+        message: 'Error getting all users',
       };
     }
   }

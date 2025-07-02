@@ -21,8 +21,11 @@ extension GetUserInfoResponseMapper on GetUserInfoResponse {
   }
 }
 
+// Extension will be added after proto generation
+
 abstract class UserDataSource {
   Future<UserEntity> getUserDetails(UserRequestModel request);
+  Future<List<UserEntity>> getAllUsers(String deviceId, String accessToken);
 }
 
 @Injectable(as: UserDataSource)
@@ -85,6 +88,71 @@ class UserDataSourceImpl extends UserDataSource {
     } catch (e) {
       if (e is Exception) {
         throw Exception('Failed to get user details: ${e.toString()}');
+      }
+      throw const NetworkFailure('An unexpected network error occurred');
+    }
+  }
+
+  @override
+  Future<List<UserEntity>> getAllUsers(String deviceId, String accessToken) async {
+    try {
+      // Check network connectivity before making the request
+      await networkInfo.checkConnectivity();
+
+      final request = GetAllUsersRequest();
+
+      // Add timeout to gRPC call
+      final response = await _client
+          .getAllUsers(
+            request,
+            options: CallOptions(
+              timeout: const Duration(seconds: 10),
+              metadata: {
+                'authorization': 'Bearer $accessToken',
+              },
+            ),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw const NetworkFailure(
+                'Request timed out. Please check your connection and try again.',
+              );
+            },
+          );
+      
+      log("========================================GET ALL USERS REQUEST============================================");
+      log(request.toString());
+      log("========================================GET ALL USERS RESPONSE===========================================");
+      log(response.toString());
+      
+      // Convert response to entity list
+      return response.users.map((user) => UserEntity(
+        success: response.success,
+        message: response.message,
+        id: user.id,
+        name: user.username,
+        email: user.email,
+      )).toList();
+      
+    } on NetworkFailure {
+      rethrow;
+    } on GrpcError catch (e) {
+      switch (e.code) {
+        case StatusCode.unavailable:
+          throw const NetworkFailure(
+            'Server is currently unavailable. Please try again later.',
+          );
+        case StatusCode.deadlineExceeded:
+          throw const NetworkFailure(
+            'Request took too long to complete. Please try again.',
+          );
+        default:
+          throw Exception('gRPC Error: ${e.message}');
+      }
+    } catch (e) {
+      if (e is Exception) {
+        throw Exception('Failed to get all users: ${e.toString()}');
       }
       throw const NetworkFailure('An unexpected network error occurred');
     }

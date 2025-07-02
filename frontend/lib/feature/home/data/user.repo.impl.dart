@@ -9,10 +9,21 @@ import 'user.datasource.dart';
 class UserRepoImpl extends UserDetailsRepo {
   final UserDataSource userDataSource;
   UserRepoImpl({required this.userDataSource});
+  
   @override
   Future<Either<Failure, UserEntity>> getUserDetails(UserRequestModel request) async {
     try {
       final result = await userDataSource.getUserDetails(request);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<UserEntity>>> getAllUsers(String deviceId, String accessToken) async {
+    try {
+      final result = await userDataSource.getAllUsers(deviceId, accessToken);
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));

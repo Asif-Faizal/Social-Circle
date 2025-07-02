@@ -347,3 +347,27 @@ final $typed_data.Uint8List getUserInfoResponseDescriptor = $convert.base64Decod
     'ChNHZXRVc2VySW5mb1Jlc3BvbnNlEhgKB3N1Y2Nlc3MYASABKAhSB3N1Y2Nlc3MSGAoHbWVzc2'
     'FnZRgCIAEoCVIHbWVzc2FnZRIeCgR1c2VyGAMgASgLMgoudXNlci5Vc2VyUgR1c2Vy');
 
+@$core.Deprecated('Use getAllUsersRequestDescriptor instead')
+const GetAllUsersRequest$json = {
+  '1': 'GetAllUsersRequest',
+};
+
+/// Descriptor for `GetAllUsersRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getAllUsersRequestDescriptor = $convert.base64Decode(
+    'ChJHZXRBbGxVc2Vyc1JlcXVlc3Q=');
+
+@$core.Deprecated('Use getAllUsersResponseDescriptor instead')
+const GetAllUsersResponse$json = {
+  '1': 'GetAllUsersResponse',
+  '2': [
+    {'1': 'success', '3': 1, '4': 1, '5': 8, '10': 'success'},
+    {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+    {'1': 'users', '3': 3, '4': 3, '5': 11, '6': '.user.User', '10': 'users'},
+  ],
+};
+
+/// Descriptor for `GetAllUsersResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getAllUsersResponseDescriptor = $convert.base64Decode(
+    'ChNHZXRBbGxVc2Vyc1Jlc3BvbnNlEhgKB3N1Y2Nlc3MYASABKAhSB3N1Y2Nlc3MSGAoHbWVzc2'
+    'FnZRgCIAEoCVIHbWVzc2FnZRIgCgV1c2VycxgDIAMoCzIKLnVzZXIuVXNlclIFdXNlcnM=');
+

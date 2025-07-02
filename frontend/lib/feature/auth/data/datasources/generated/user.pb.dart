@@ -1567,6 +1567,98 @@ class GetUserInfoResponse extends $pb.GeneratedMessage {
   User ensureUser() => $_ensure(2);
 }
 
+class GetAllUsersRequest extends $pb.GeneratedMessage {
+  factory GetAllUsersRequest() => create();
+  GetAllUsersRequest._() : super();
+  factory GetAllUsersRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetAllUsersRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetAllUsersRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'user'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllUsersRequest clone() => GetAllUsersRequest()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllUsersRequest copyWith(void Function(GetAllUsersRequest) updates) => super.copyWith((message) => updates(message as GetAllUsersRequest)) as GetAllUsersRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetAllUsersRequest create() => GetAllUsersRequest._();
+  GetAllUsersRequest createEmptyInstance() => create();
+  static $pb.PbList<GetAllUsersRequest> createRepeated() => $pb.PbList<GetAllUsersRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetAllUsersRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetAllUsersRequest>(create);
+  static GetAllUsersRequest? _defaultInstance;
+}
+
+class GetAllUsersResponse extends $pb.GeneratedMessage {
+  factory GetAllUsersResponse({
+    $core.bool? success,
+    $core.String? message,
+    $core.Iterable<User>? users,
+  }) {
+    final $result = create();
+    if (success != null) {
+      $result.success = success;
+    }
+    if (message != null) {
+      $result.message = message;
+    }
+    if (users != null) {
+      $result.users.addAll(users);
+    }
+    return $result;
+  }
+  GetAllUsersResponse._() : super();
+  factory GetAllUsersResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetAllUsersResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetAllUsersResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'user'), createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'success')
+    ..aOS(2, _omitFieldNames ? '' : 'message')
+    ..pc<User>(3, _omitFieldNames ? '' : 'users', $pb.PbFieldType.PM, subBuilder: User.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllUsersResponse clone() => GetAllUsersResponse()..mergeFromMessage(this);
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GetAllUsersResponse copyWith(void Function(GetAllUsersResponse) updates) => super.copyWith((message) => updates(message as GetAllUsersResponse)) as GetAllUsersResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetAllUsersResponse create() => GetAllUsersResponse._();
+  GetAllUsersResponse createEmptyInstance() => create();
+  static $pb.PbList<GetAllUsersResponse> createRepeated() => $pb.PbList<GetAllUsersResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetAllUsersResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetAllUsersResponse>(create);
+  static GetAllUsersResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get success => $_getBF(0);
+  @$pb.TagNumber(1)
+  set success($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSuccess() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSuccess() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get message => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set message($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasMessage() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMessage() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<User> get users => $_getList(2);
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');
