@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-protos",
     "start": "node dist/server.js",
     "server": "ts-node-dev --respawn --transpile-only src/server.ts",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "ts-node-dev src/client.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-protos": "cp -r src/proto dist/proto"
   },
   "keywords": [],
   "author": "",

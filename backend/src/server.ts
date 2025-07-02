@@ -5,28 +5,41 @@ import path from 'path';
 import { connectToDatabase, closeDatabase } from './utils/database';
 import config from './config/config';
 import { userRoutes } from './routes/user.routes';
+import { chatRoutes } from './routes/chat.routes';
 
-// Load proto file
-const PROTO_PATH = path.resolve(__dirname, './proto/user.proto');
-console.log('Loading proto file from:', PROTO_PATH);
+const PROTO_DIR = path.resolve(__dirname, './proto');
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+const PROTO_PATHS = [
+  path.join(PROTO_DIR, 'user.proto'),
+  path.join(PROTO_DIR, 'chat.proto'),
+];
+
+console.log('Loading proto files from:', PROTO_PATHS);
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATHS, {
   keepCase: true,
   longs: String,
   enums: String,
   defaults: true,
   oneofs: true,
-  json: true // Add JSON support
+  json: true,
+  includeDirs: [PROTO_DIR],
 });
 
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const userProto = protoDescriptor.user as any;
+const chatProto = protoDescriptor.chat as any;
 
 // Debug the service definitions
-console.log('Available services:', Object.keys(userProto));
+console.log('Available services in userProto:', Object.keys(userProto));
 if (userProto.UserService) {
   console.log('Available methods in UserService:', 
     Object.keys(userProto.UserService.service));
+}
+console.log('Available services in chatProto:', Object.keys(chatProto));
+if (chatProto.ChatService) {
+  console.log('Available methods in ChatService:', 
+    Object.keys(chatProto.ChatService.service));
 }
 
 async function startServer() {
@@ -49,6 +62,12 @@ async function startServer() {
       RefreshToken: userRoutes.refreshToken,
       GetUserInfo: userRoutes.getUserInfo,
       CheckEmail: userRoutes.checkEmail
+    });
+
+    // Add chat service
+    server.addService(chatProto.ChatService.service, {
+      GetChatHistory: chatRoutes.getChatHistory,
+      Converse: chatRoutes.converse,
     });
 
     // Add reflection service

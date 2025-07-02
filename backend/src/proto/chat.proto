@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package chat;
+
+import "google/protobuf/timestamp.proto";
+
+service ChatService {
+  // Establishes a dedicated, bidirectional stream for a conversation between two users.
+  rpc Converse(stream ConversationStream) returns (stream ConversationStream);
+
+  // Get chat history between two users
+  rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse);
+}
+
+// The first message from the client MUST be a setup request.
+message StreamSetupRequest {
+    string sender_id = 1;
+    string receiver_id = 2; // The user to converse with.
+}
+
+// A message sent from the client to the server within an established conversation.
+// It doesn't need sender/receiver info because the stream itself defines the participants.
+message NewMessage {
+    string content = 1;
+}
+
+// A full chat message as stored in the DB and sent from the server to clients.
+message ChatMessage {
+  string id = 1;
+  string sender_id = 2;
+  string receiver_id = 3;
+  string content = 4;
+  int64 timestamp_ms = 5;
+  MessageStatus status = 6;
+}
+
+enum MessageStatus {
+  SENT = 0;
+  DELIVERED = 1;
+  READ = 2;
+}
+
+// The message wrapper for the conversation stream.
+message ConversationStream {
+  oneof event {
+    StreamSetupRequest setup = 1;       // Client -> Server
+    NewMessage new_message = 2;          // Client -> Server
+    ChatMessage chat_message = 3;        // Server -> Client
+    MessageStatusUpdate status_update = 4; // Bidirectional
+  }
+}
+
+message MessageStatusUpdate {
+  string message_id = 1;
+  MessageStatus status = 2;
+}
+
+message GetChatHistoryRequest {
+  string user_id_1 = 1;
+  string user_id_2 = 2;
+  int32 page_size = 3;
+  int32 page_number = 4; // or use a timestamp for pagination
+}
+
+message GetChatHistoryResponse {
+  repeated ChatMessage messages = 1;
+} 
